@@ -1,0 +1,136 @@
+﻿@model ERPManagementSystem.Models.Student
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+    body {
+        background: #f5f7fb;
+    }
+    body {
+        background: #f5f7fb;
+        background-image: url('/content/images/OIP (1).jfif');
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .form-card {
+        border-radius: 18px;
+        max-width: 950px;
+        margin: auto;
+    }
+
+    .form-header {
+        background: linear-gradient(135deg,#28a745,#1e7e34);
+        color: white;
+        border-radius: 18px 18px 0 0;
+        padding: 18px;
+    }
+
+    .form-control, .form-select {
+        border-radius: 10px;
+    }
+
+    label {
+        font-weight: 600;
+    }
+</style>
+
+@if (TempData["Success"] != null)
+{
+    <div class="container mt-3" style="max-width:950px;">
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    </div>
+}
+
+<div class="container mt-4">
+    <div class="card shadow form-card">
+
+        <div class="form-header">
+            <h4><i class="fa fa-user-graduate"></i> Student Entry</h4>
+        </div>
+
+        <div class="card-body">
+
+            @using (Html.BeginForm())
+            {
+                <div class="row g-3">
+
+                    <div class="col-sm-6">
+                        <label>Enrollment No</label>
+                        @Html.TextBoxFor(x => x.EnrollmentNo,
+                        new { @class = "form-control", required = "required" })
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>Admission Date</label>
+                        @Html.TextBoxFor(x => x.AdmissionDate,
+                        new { @class = "form-control", type = "date", required = "required" })
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>Course</label>
+                        @Html.DropDownListFor(x => x.CourseId,
+                        ViewBag.CourseList as IEnumerable<SelectListItem>,
+                        "Select Course",
+                        new { @class = "form-select", required = "required" })
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>Class</label>
+                        @Html.DropDownListFor(x => x.ClassId,
+                        ViewBag.ClassList as IEnumerable<SelectListItem>,
+                        "Select Class",
+                        new { @class = "form-select", required = "required" })
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>First Name</label>
+                        @Html.TextBoxFor(x => x.FirstName,
+                        new { @class = "form-control", required = "required" })
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>Last Name</label>
+                        @Html.TextBoxFor(x => x.LastName,
+                        new { @class = "form-control" })
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>Mobile</label>
+                        @Html.TextBoxFor(x => x.Mobile,
+                        new { @class = "form-control", maxlength = "10" })
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>Email</label>
+                        @Html.TextBoxFor(x => x.Email,
+                        new { @class = "form-control", type = "email" })
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label>Father Name</label>
+                        @Html.TextBoxFor(x => x.FatherName,
+                        new { @class = "form-control" })
+                    </div>
+
+                    <div class="col-sm-12">
+                        <label>Address</label>
+                        @Html.TextAreaFor(x => x.Address,
+                        new { @class = "form-control", rows = "3" })
+                    </div>
+
+                </div>
+
+                <div class="text-end mt-4">
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-save"></i> Save Student
+                    </button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>

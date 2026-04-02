@@ -1,0 +1,50 @@
+﻿@model ERPManagementSystem.Models.FeesStructure
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-4">
+    <div class="card shadow" style="max-width:600px;margin:auto;">
+
+        <div class="card-header bg-primary text-white">
+            <h4>Fees Structure Entry</h4>
+        </div>
+
+        <div class="card-body">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success">
+                    @TempData["Success"]
+                </div>
+            }
+
+            @using (Html.BeginForm())
+            {
+                <div class="mb-3">
+                    <label>Course</label>
+                    @Html.DropDownListFor(x => x.CourseId,
+                    ViewBag.CourseList as IEnumerable<SelectListItem>,
+                    "Select Course",
+                    new { @class = "form-select", required = "required" })
+                </div>
+
+                <div class="mb-3">
+                    <label>Semester</label>
+                    @Html.TextBoxFor(x => x.Semester,
+                    new { @class = "form-control", type = "number", required = "required" })
+                </div>
+
+                <div class="mb-3">
+                    <label>Total Fees</label>
+                    @Html.TextBoxFor(x => x.TotalFees,
+                    new { @class = "form-control", type = "number", step = "0.01", required = "required" })
+                </div>
+
+                <button type="submit" class="btn btn-success">
+                    Save Fees Structure
+                </button>
+            }
+
+        </div>
+    </div>
+</div>
