@@ -1,0 +1,184 @@
+﻿@model ERPManagementSystem.Models.FeesCommitment
+<script src="~/Scripts/jquery-3.7.0.min.js"></script>
+
+<h3>Fee Commitment</h3>
+@if (TempData["Success"] != null)
+{
+    <script>
+        alert('@TempData["Success"]');
+    </script>
+}
+@using (Html.BeginForm())
+{
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <label>College</label>
+            @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "Select", new { @class = "form-control", id = "CollegeId" })
+
+            <label>Department</label>
+            <select id="DepartmentId" class="form-control"></select>
+
+            <label>Course</label>
+            <select id="CourseId" class="form-control"></select>
+
+            <label>Class</label>
+            <select id="ClassId" class="form-control"></select>
+
+            <label>Student</label>
+            @Html.DropDownListFor(m => m.StudentId, new List<SelectListItem>(), "Select", new { @class = "form-control", id = "StudentId" })
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label>Semester</label>
+            @Html.TextBoxFor(m => m.Semester, new { @class = "form-control" })
+
+            <label>Total Fees</label>
+            @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control" })
+
+            <label>Fee Type</label>
+            @Html.DropDownListFor(m => m.FeeType,
+            new List<SelectListItem>
+            {
+            new SelectListItem{Text="OnTime",Value="OnTime"},
+            new SelectListItem{Text="Installment",Value="Installment"}
+            },
+            "Select",
+            new { @class = "form-control", id = "FeeType" })
+
+        </div>
+
+    </div>
+
+    <div id="installmentDiv" style="display:none">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button type="button" onclick="addRow()" class="btn btn-primary">Add Row</button>
+
+    </div>
+
+    <br />
+    <input type="submit" class="btn btn-success" value="Save Commitment" />
+
+}
+
+<script>
+
+    $("#FeeType").change(function () {
+
+        if ($(this).val() == "Installment")
+            $("#installmentDiv").show();
+        else
+            $("#installmentDiv").hide();
+
+    });
+
+    function addRow() {
+        var row = `<tr>
+<td><input type="date" name="InstallmentDate" class="form-control"/></td>
+<td><input type="text" name="InstallmentAmount" class="form-control"/></td>
+<td><button type="button" onclick="removeRow(this)">X</button></td>
+</tr>`;
+        $("table tbody").append(row);
+    }
+
+    function removeRow(btn) {
+        $(btn).closest("tr").remove();
+    }
+
+</script>
+
+@*<script>
+        // cascading
+        $("#CollegeId").change(function () {
+            $.get("/Commitment/GetDepartment", { collegeId: $(this).val() }, function (data) {
+                $("#DepartmentId").empty();
+                $.each(data, function (i, row) {
+                    $("#DepartmentId").append("<option value='" + row.DepartmentId + "'>" + row.DepartmentName + "</option>");
+                });
+            });
+        });
+
+        $("#DepartmentId").change(function () {
+            $.get("/Commitment/GetCourse", { departmentId: $(this).val() }, function (data) {
+                $("#CourseId").empty();
+                $.each(data, function (i, row) {
+                    $("#CourseId").append("<option value='" + row.CourseId + "'>" + row.CourseName + "</option>");
+                });
+            });
+        });
+
+        $("#CourseId").change(function () {
+            $.get("/Commitment/GetClass", { courseId: $(this).val() }, function (data) {
+                $("#ClassId").empty();
+                $.each(data, function (i, row) {
+                    $("#ClassId").append("<option value='" + row.ClassId + "'>" + row.Section + "</option>");
+                });
+            });
+        });
+
+        $("#ClassId").change(function () {
+            $.get("/Commitment/GetStudent", { classId: $(this).val() }, function (data) {
+                $("#StudentId").empty();
+                $.each(data, function (i, row) {
+                    $("#StudentId").append("<option value='" + row.StudentId + "'>" + row.StudentName + "</option>");
+                });
+            });
+        });
+
+    </script>*@
+
+<script>
+    $("#CollegeId").change(function () {
+        $.get("/Commitment/GetDepartment", { collegeId: $(this).val() }, function (data) {
+            $("#DepartmentId").empty();
+            $("#DepartmentId").append("<option value=''>-Select-</option>");
+            $.each(data, function (i, row) {
+                $("#DepartmentId").append("<option value='" + row.DepartmentId + "'>" + row.DepartmentName + "</option>");
+            });
+        });
+    });
+
+    $("#DepartmentId").change(function () {
+        $.get("/Commitment/GetCourse", { departmentId: $(this).val() }, function (data) {
+            $("#CourseId").empty();
+            $("#CourseId").append("<option value=''>-Select-</option>");
+            $.each(data, function (i, row) {
+                $("#CourseId").append("<option value='" + row.CourseId + "'>" + row.CourseName + "</option>");
+            });
+        });
+    });
+
+    $("#CourseId").change(function () {
+        $.get("/Commitment/GetClass", { courseId: $(this).val() }, function (data) {
+            $("#ClassId").empty();
+            $("#ClassId").append("<option value=''>-Select-</option>");
+            $.each(data, function (i, row) {
+                $("#ClassId").append("<option value='" + row.ClassId + "'>" + row.Section + "</option>");
+            });
+        });
+    });
+
+    $("#ClassId").change(function () {
+        $.get("/Commitment/GetStudent", { classId: $(this).val() }, function (data) {
+            $("#StudentId").empty();
+            $("#StudentId").append("<option value=''>-Select-</option>");
+            $.each(data, function (i, row) {
+                $("#StudentId").append("<option value='" + row.StudentId + "'>" + row.StudentName + "</option>");
+            });
+        });
+    });
+</script>

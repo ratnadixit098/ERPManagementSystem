@@ -1,0 +1,166 @@
+﻿@model ERPManagementSystem.Models.FeePayment
+
+<script src="~/Scripts/jquery-3.7.0.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<h3>Student Fee Payment</h3>
+
+<div class="row">
+
+    <div class="col-md-6">
+
+        <label>College</label>
+        @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "-Select-", new { @class = "form-control", id = "CollegeId" })
+
+        <label>Department</label>
+        <select id="DepartmentId" class="form-control">
+            <option>-Select-</option>
+        </select>
+
+        <label>Course</label>
+        <select id="CourseId" class="form-control">
+            <option>-Select-</option>
+        </select>
+
+        <label>Class</label>
+        <select id="ClassId" class="form-control">
+            <option>-Select-</option>
+        </select>
+
+        <label>Student</label>
+        <select id="StudentId" class="form-control">
+            <option>-Select-</option>
+        </select>
+
+    </div>
+
+    <div class="col-md-6">
+
+        <label>Fee Type</label>
+        <input type="text" id="FeeType" class="form-control" disabled />
+
+        <label>Total Fee</label>
+        <input type="text" id="TotalFee" class="form-control" disabled />
+
+        <label>Paid Amount</label>
+        <input type="text" id="PaidAmount" class="form-control" disabled />
+
+        <label>Remaining</label>
+        <input type="text" id="RemainingAmount" class="form-control" disabled />
+
+        <label>Pay Amount</label>
+        <input type="text" id="PayAmount" class="form-control" />
+
+        <br />
+        <button id="payBtn" class="btn btn-success" disabled>Pay Now</button>
+
+    </div>
+
+</div>
+
+<script>
+
+    $("#CollegeId").change(function () {
+        $.get("/FeePayment/GetDepartment", { collegeId: $(this).val() }, function (data) {
+            $("#DepartmentId").empty().append("<option>-Select-</option>");
+            $.each(data, function (i, row) {
+                $("#DepartmentId").append("<option value='" + row.DepartmentId + "'>" + row.DepartmentName + "</option>");
+            });
+        });
+    });
+
+    $("#DepartmentId").change(function () {
+        $.get("/FeePayment/GetCourse", { departmentId: $(this).val() }, function (data) {
+            $("#CourseId").empty().append("<option>-Select-</option>");
+            $.each(data, function (i, row) {
+                $("#CourseId").append("<option value='" + row.CourseId + "'>" + row.CourseName + "</option>");
+            });
+        });
+    });
+
+    $("#CourseId").change(function () {
+        $.get("/FeePayment/GetClass", { courseId: $(this).val() }, function (data) {
+            $("#ClassId").empty().append("<option>-Select-</option>");
+            $.each(data, function (i, row) {
+                $("#ClassId").append("<option value='" + row.ClassId + "'>" + row.Section + "</option>");
+            });
+        });
+    });
+
+    $("#ClassId").change(function () {
+        $.get("/FeePayment/GetStudent", { classId: $(this).val() }, function (data) {
+            $("#StudentId").empty().append("<option>-Select-</option>");
+            $.each(data, function (i, row) {
+                $("#StudentId").append("<option value='" + row.StudentId + "'>" + row.StudentName + "</option>");
+            });
+        });
+    });
+
+    $("#StudentId").change(function () {
+
+        $.get("/FeePayment/GetFeeDetails",
+            { studentId: $(this).val() },
+            function (data) {
+
+                $("#FeeType").val(data.FeeType);
+                $("#TotalFee").val(data.TotalFee);
+                $("#PaidAmount").val(data.PaidAmount);
+                $("#RemainingAmount").val(data.Remaining);
+
+                if (parseFloat(data.Remaining) > 0)
+                    $("#payBtn").prop("disabled", false);
+                else
+                    $("#payBtn").prop("disabled", true);
+            });
+    });
+
+    $("#PayAmount").keyup(function () {
+
+        var remaining = parseFloat($("#RemainingAmount").val());
+        var pay = parseFloat($(this).val());
+
+        if (pay > remaining) {
+            alert("Pay amount cannot exceed remaining fee");
+            $(this).val("");
+        }
+
+    });
+
+    $("#payBtn").click(function (e) {
+
+        e.preventDefault();
+
+        var amount = $("#PayAmount").val();
+        var studentId = $("#StudentId").val();
+
+        $.get("/FeePayment/CreateOrder", { amount: amount }, function (orderId) {
+
+            var options = {
+                "key": "rzp_test_SZrS5COEYmgiPS",
+                "amount": amount * 100,
+                "currency": "INR",
+                "name": "College Fee Payment",
+                "description": "Student Fee",
+                "order_id": orderId,
+
+                "handler": function (response) {
+
+                    $.post("/FeePayment/SavePayment", {
+                        studentId: studentId,
+                        payAmount: amount,
+                        paymentId: response.razorpay_payment_id
+                    }, function () {
+
+                        alert("Payment Successful");
+                        location.reload();
+
+                    });
+                }
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        });
+    });
+
+</script>

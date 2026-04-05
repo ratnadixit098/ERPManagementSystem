@@ -1,0 +1,113 @@
+﻿@model ERPManagementSystem.Models.Fees
+
+<div class="card shadow-lg mt-3">
+    <div class="card-header bg-primary text-white">
+        <h4>💰 Student Fee Entry</h4>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+
+            <!-- LEFT SIDE -->
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label>College</label>
+                    @Html.DropDownList("CollegeId",
+                    (IEnumerable<SelectListItem>)ViewBag.CollegeList,
+                    "Select College",
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Department</label>
+                    @Html.DropDownList("DepartmentId",
+                    (IEnumerable<SelectListItem>)ViewBag.DepartmentList,
+                    "Select Department",
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Course</label>
+                    @Html.DropDownList("CourseId",
+                    (IEnumerable<SelectListItem>)ViewBag.CourseList,
+                    "Select Course",
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Class</label>
+                    @Html.DropDownList("ClassId",
+                    (IEnumerable<SelectListItem>)ViewBag.ClassList,
+                    "Select Class",
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Student</label>
+                    @Html.DropDownListFor(m => m.StudentId,
+                    (IEnumerable<SelectListItem>)ViewBag.StudentList,
+                    "Select Student",
+                    new { @class = "form-control" })
+                </div>
+
+            </div>
+
+            <!-- RIGHT SIDE -->
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label>Semester</label>
+                    @Html.TextBoxFor(m => m.Semester,
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Total Fees</label>
+                    @Html.TextBoxFor(m => m.TotalFees,
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Paid Amount</label>
+                    @Html.TextBoxFor(m => m.PaidAmount,
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Pending Amount</label>
+                    @Html.TextBoxFor(m => m.PendingAmount,
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Due Date</label>
+                    @Html.TextBoxFor(m => m.DueDate,
+                    "{0:yyyy-MM-dd}",
+                    new { @type = "date", @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    <label>Fee Type</label>
+                    @Html.DropDownListFor(m => m.FeeType,
+                    new List<SelectListItem>
+                    {
+                        new SelectListItem{Text="OnTime",Value="OnTime"},
+                        new SelectListItem{Text="Installment",Value="Installment"}
+                    },
+                    "Select",
+                    new { @class = "form-control" })
+                </div>
+
+                <div class="form-group mt-3">
+                    <input type="submit" value="Save Fee"
+                           class="btn btn-success w-100" />
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
