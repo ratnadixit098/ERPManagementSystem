@@ -147,6 +147,7 @@
     <Compile Include="Controllers\FeesStructureController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Controllers\ReminderController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\SubjectController.cs" />
     <Compile Include="Controllers\TeacherController.cs" />
@@ -159,12 +160,14 @@
     <Compile Include="Models\College.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Department.cs" />
+    <Compile Include="Models\EmailHelper.cs" />
     <Compile Include="Models\FeePayment.cs" />
     <Compile Include="Models\Fees.cs" />
     <Compile Include="Models\FeesCommitment.cs" />
     <Compile Include="Models\FeesReportModel.cs" />
     <Compile Include="Models\FeesStructure.cs" />
     <Compile Include="Models\Login.cs" />
+    <Compile Include="Models\ReminderService.cs" />
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\Teacher.cs" />
@@ -390,22 +393,19 @@
     <Content Include="Views\Subject\Create.cshtml" />
     <Content Include="Views\Teacher\Create.cshtml" />
     <Content Include="Views\TimeTable\Create.cshtml" />
-
     <Content Include="Views\FeesReport\Create.cshtml" />
     <Content Include="Views\Commitment\Create.cshtml" />
     <Content Include="Views\FeePayment\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Views\FeesCommitment\" />
-
     <Content Include="Views\Shared\AdminLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="obj\Debug\TempPE\" />
+    <Folder Include="Views\FeesCommitment\" />
     <Folder Include="Views\Login\" />
-
+    <Folder Include="Views\Reminder\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
