@@ -1,62 +1,228 @@
 ﻿@model ERPManagementSystem.Models.Fees
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.7.0.min.js"></script>
 
-<div class="container mt-4">
-    <div class="card shadow" style="max-width:700px;margin:auto;">
+<div class="card shadow-lg mt-3">
+    <div class="card-header bg-primary text-white">
+        <h4>Student Fee Entry</h4>
+    </div>
 
-        <div class="card-header bg-success text-white">
-            <h4>Student Fees Entry</h4>
-        </div>
-
+    @using (Html.BeginForm())
+    {
         <div class="card-body">
 
-            @if (TempData["Success"] != null)
-            {
-                <div class="alert alert-success">
-                    @TempData["Success"]
-                </div>
-            }
+            <div class="row">
 
-            @using (Html.BeginForm())
-            {
-                <div class="mb-3">
-                    <label>Student</label>
-                    @Html.DropDownListFor(x => x.StudentId,
-                    ViewBag.StudentList as IEnumerable<SelectListItem>,
-                    "Select Student",
-                    new { @class = "form-select", required = "required" })
-                </div>
+                <div class="col-sm-6">
 
-                <div class="mb-3">
-                    <label>Semester</label>
-                    @Html.TextBoxFor(x => x.Semester,
-                    new { @class = "form-control", type = "number", required = "required" })
-                </div>
+                    <div class="form-group">
+                        <label>College</label>
+                        @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "Select College", new { @class = "form-control", id = "CollegeId" })
+                    </div>
 
-                <div class="mb-3">
-                    <label>Total Fees</label>
-                    @Html.TextBoxFor(x => x.TotalFees,
-                    new { @class = "form-control", type = "number", step = "0.01", required = "required" })
-                </div>
+                    <div class="form-group">
+                        <label>Department</label>
+                        @Html.DropDownList("DepartmentId", new List<SelectListItem>(), "Select Department", new { @class = "form-control", id = "DepartmentId" })
+                    </div>
 
-                <div class="mb-3">
-                    <label>Paid Amount</label>
-                    @Html.TextBoxFor(x => x.PaidAmount,
-                    new { @class = "form-control", type = "number", step = "0.01", required = "required" })
+                    <div class="form-group">
+                        <label>Course</label>
+                        @Html.DropDownList("CourseId", new List<SelectListItem>(), "Select Course", new { @class = "form-control", id = "CourseId" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Class</label>
+                        @Html.DropDownList("ClassId", new List<SelectListItem>(), "Select Class", new { @class = "form-control", id = "ClassId" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Student</label>
+                        @Html.DropDownListFor(m => m.StudentId, new List<SelectListItem>(), "Select Student", new { @class = "form-control", id = "StudentId" })
+                    </div>
+
                 </div>
 
-                <div class="mb-3">
-                    <label>Payment Date</label>
-                    @Html.TextBoxFor(x => x.PaymentDate,
-                    new { @class = "form-control", type = "date", required = "required" })
+                <div class="col-sm-6">
+
+                    <div class="form-group">
+                        <label>Semester</label>
+                        @Html.TextBoxFor(m => m.Semester, new { @class = "form-control", id = "Semester" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Total Fees</label>
+                        @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control", id = "TotalFees" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fee Type</label>
+                        @Html.DropDownListFor(m => m.FeeType,
+                        new List<SelectListItem>
+                        {
+                        new SelectListItem{Text="OnTime",Value="OnTime"},
+                        new SelectListItem{Text="Installment",Value="Installment"}
+                        },
+                        "Select",
+                        new { @class = "form-control", id = "FeeType" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Paid Amount</label>
+                        @Html.TextBoxFor(m => m.PaidAmount, new { @class = "form-control", id = "PaidAmount" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Payment Date</label>
+                        @Html.TextBoxFor(m => m.PaymentDate, new { @class = "form-control", type = "date" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Remaining Amount</label>
+                        <input type="text" id="RemainingAmount" class="form-control" readonly />
+                    </div>
+
                 </div>
 
-                <button type="submit" class="btn btn-success">
-                    Save Fees
-                </button>
-            }
+            </div>
+
+            <div id="installmentDiv" style="display:none">
+                <hr />
+                <h5>Installment Details</h5>
+
+                <table class="table table-bordered" id="installmentTable">
+                    <thead>
+                        <tr>
+                            <th>Due Date</th>
+                            <th>Amount</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <button type="button" class="btn btn-primary" onclick="addRow()">+ Add Row</button>
+            </div>
+
+            <br />
+
+            <input type="submit" value="Save Fee" class="btn btn-success w-100" />
 
         </div>
-    </div>
+    }
+
 </div>
+
+<script>
+
+    var dbRemaining = 0;
+
+    $("#FeeType").change(function () {
+
+        var type = $(this).val();
+
+        if (type == "Installment") {
+            $("#installmentDiv").show();
+        }
+        else {
+            $("#installmentDiv").hide();
+        }
+
+    });
+
+    function addRow() {
+        var row = `<tr>
+<td><input type="date" name="InstallmentDate" class="form-control"/></td>
+<td><input type="text" name="InstallmentAmount" class="form-control"/></td>
+<td><button type="button" class="btn btn-danger" onclick="removeRow(this)">X</button></td>
+</tr>`;
+
+        $("#installmentTable tbody").append(row);
+    }
+
+    function removeRow(btn) {
+        $(btn).closest("tr").remove();
+    }
+
+    $("#StudentId").change(function () {
+
+        $.get("/Fees/GetStudentFee",
+            { studentId: $(this).val() },
+            function (data) {
+
+                if (data != null) {
+                    $("#TotalFees").val(data.TotalFees);
+                    $("#Semester").val(data.Semester);
+                    $("#FeeType").val(data.FeeType);
+
+                    dbRemaining = parseFloat(data.PendingAmount) || 0;
+
+                    $("#RemainingAmount").val(dbRemaining);
+                    $("#PaidAmount").val("");
+
+                    $("#FeeType").prop("disabled", true);
+
+                    if (data.FeeType == "Installment") {
+                        $("#installmentDiv").show();
+                    }
+                }
+                else {
+                    $("#FeeType").prop("disabled", false);
+                }
+
+            });
+
+    });
+
+    $("#PaidAmount").keyup(function () {
+
+        var paid = parseFloat($(this).val()) || 0;
+
+        $("#RemainingAmount").val(dbRemaining - paid);
+
+    });
+
+</script>
+
+<script>
+
+    $("#CollegeId").change(function () {
+        $.get("/Fees/GetDepartment", { collegeId: $(this).val() }, function (data) {
+            $("#DepartmentId").empty();
+            $("#DepartmentId").append("<option>Select</option>");
+            $.each(data, function (i, row) {
+                $("#DepartmentId").append("<option value='" + row.DepartmentId + "'>" + row.DepartmentName + "</option>");
+            });
+        });
+    });
+
+    $("#DepartmentId").change(function () {
+        $.get("/Fees/GetCourse", { departmentId: $(this).val() }, function (data) {
+            $("#CourseId").empty();
+            $("#CourseId").append("<option>Select</option>");
+            $.each(data, function (i, row) {
+                $("#CourseId").append("<option value='" + row.CourseId + "'>" + row.CourseName + "</option>");
+            });
+        });
+    });
+
+    $("#CourseId").change(function () {
+        $.get("/Fees/GetClass", { courseId: $(this).val() }, function (data) {
+            $("#ClassId").empty();
+            $("#ClassId").append("<option>Select</option>");
+            $.each(data, function (i, row) {
+                $("#ClassId").append("<option value='" + row.ClassId + "'>" + row.Section + "</option>");
+            });
+        });
+    });
+
+    $("#ClassId").change(function () {
+        $.get("/Fees/GetStudent", { classId: $(this).val() }, function (data) {
+            $("#StudentId").empty();
+            $("#StudentId").append("<option>Select</option>");
+            $.each(data, function (i, row) {
+                $("#StudentId").append("<option value='" + row.StudentId + "'>" + row.StudentName + "</option>");
+            });
+        });
+    });
+
+</script>
