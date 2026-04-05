@@ -29,5 +29,7 @@ namespace ERPManagementSystem.Models
 
         [Required]
         public DateTime JoiningDate { get; set; }
+        public int Post_Id { get; set; }
+        public string Post_Name { get; set; }
     }
 }
