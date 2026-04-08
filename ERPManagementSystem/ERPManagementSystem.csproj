@@ -139,6 +139,7 @@
     <Compile Include="Controllers\ClassController.cs" />
     <Compile Include="Controllers\CollegeController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\DepartmentController.cs" />
     <Compile Include="Controllers\FeePaymentController.cs" />
     <Compile Include="Controllers\FeesCommitmentController.cs" />
@@ -396,6 +397,8 @@
     <Content Include="Views\FeesReport\Create.cshtml" />
     <Content Include="Views\Commitment\Create.cshtml" />
     <Content Include="Views\FeePayment\Create.cshtml" />
+    <Content Include="Views\Dashboard\StudentDashboard.cshtml" />
+    <Content Include="Views\Shared\_StudentLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\AdminLayout.cshtml" />
