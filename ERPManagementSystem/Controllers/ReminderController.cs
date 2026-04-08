@@ -55,7 +55,7 @@ GROUP BY s.StudentId,s.FirstName+' '+LastName,s.Email,fc.TotalFees,FeeInstallmen
                     string body = $@"
             Dear {row["StudentName"]},<br/><br/>
             Your fee payment is overdue.<br/><br/>
-            Due Date: {Convert.ToDateTime(row["DueDate"]).ToShortDateString()}<br/>
+            Due Date: {Convert.ToDateTime(row["DueDate"]== DBNull.Value? DateTime.Now.Date: row["DueDate"]).ToShortDateString()}<br/>
             Total Fee: {row["TotalFees"]}<br/>
             Remaining: {row["Remaining"]}<br/><br/>
             Please pay as soon as possible.<br/><br/>

@@ -12,22 +12,26 @@ namespace ERPManagementSystem.Models
     {
         public static void SendEmail(string to, string subject, string body)
         {
-            MailMessage mail = new MailMessage();
-            mail.To.Add(to);
-            mail.From = new MailAddress("ratnadixit098@gmail.com");
-            mail.Subject = subject;
-            mail.Body = body;
-            mail.IsBodyHtml = true;
+            if (to!="")
+            {
+                MailMessage mail = new MailMessage();
+                mail.To.Add(to);
+                mail.From = new MailAddress("ratnadixit098@gmail.com");
+                mail.Subject = subject;
+                mail.Body = body;
+                mail.IsBodyHtml = true;
 
-            SmtpClient smtp = new SmtpClient();
-            smtp.Host = "smtp.gmail.com";
-            smtp.Port = 587;
-            smtp.EnableSsl = true;
-            smtp.Credentials = new NetworkCredential(
-                "ratnadixit098@gmail.com",
-                "ubvo hygh vojr wqhl\r\n");
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.Port = 587;
+                smtp.EnableSsl = true;
+                smtp.Credentials = new NetworkCredential(
+                    "ratnadixit098@gmail.com",
+                    "ubvo hygh vojr wqhl\r\n");
 
-            smtp.Send(mail);
+                smtp.Send(mail);
+            }
+
         }
     }
 }
