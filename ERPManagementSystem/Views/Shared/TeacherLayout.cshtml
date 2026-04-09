@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <style>
-       /* body {
+        /* body {
             margin: 0;
             font-family: 'Segoe UI', sans-serif;
             background: #f4f6f9;
@@ -20,6 +21,7 @@
             margin-left: inherit !important;
             --bs-gutter-x: 0rem !important;
         }
+
         .header {
             height: 60px;
             background: #ecf0f1;
@@ -115,26 +117,26 @@
         <h2>Welcome to the Admin Panel</h2>
 
         @*<div class="user-menu" id="userMenu">
-            @Session["UserName"] <i class="fa fa-caret-down"></i>
-            <div class="dropdown" id="dropdown">
-                <a href="/Account/Logout">Logout</a>
-            </div>
-        </div>*@
+                @Session["UserName"] <i class="fa fa-caret-down"></i>
+                <div class="dropdown" id="dropdown">
+                    <a href="/Account/Logout">Logout</a>
+                </div>
+            </div>*@
     </div>
 
     <div class="container">
 
         <!-- Sidebar -->
-        
+
         <div class="sidebar">
             <h3><i class="fa fa-dashboard"></i> My Dashboard</h3>
             <hr />
             <a href="/Home/Dashboard"><i class="fa fa-home"></i> Dashboard</a>
-            <a href="/Teacher/Create"><i class="fa fa-user"></i> Create Teacher</a>
-            <a href="/Student/Create"><i class="fa fa-graduation-cap"></i> Create Student</a>
-            <a href="/Class/Create"><i class="fa fa-chalkboard"></i> Create Class</a>
-            <a href="/Teacher/List"><i class="fa fa-list"></i> Teacher List</a>
-            <a href="/Student/List"><i class="fa fa-list"></i> Student List</a>
+            <a href="/Student/Create"><i class="fa fa-user"></i> Create Student</a>
+            <a href="/FeesCommitment/Create"><i class="fa fa-graduation-cap"></i>Commitment</a>
+            <a href="/Timetable/Create"><i class="fa fa-chalkboard"></i>TimeTable</a>
+            @*<a href="/Teacher/List"><i class="fa fa-list"></i> Teacher List</a>
+            <a href="/Student/List"><i class="fa fa-list"></i> Student List</a>*@
         </div>
 
         <!-- 🔥 YAHI IMPORTANT PART -->
@@ -154,3 +156,4 @@
 
 </body>
 </html>
+

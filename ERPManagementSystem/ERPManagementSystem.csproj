@@ -396,6 +396,7 @@
     <Content Include="Views\FeesReport\Create.cshtml" />
     <Content Include="Views\Commitment\Create.cshtml" />
     <Content Include="Views\FeePayment\Create.cshtml" />
+    <Content Include="Views\Shared\TeacherLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\AdminLayout.cshtml" />

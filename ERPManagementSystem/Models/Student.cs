@@ -20,6 +20,7 @@ namespace ERPManagementSystem.Models
         public string Address { get; set; }
 
         public string Barcode { get; set; }
+        public int PostId { get; set; }
         public DateTime AdmissionDate { get; set; }
     }
 }
