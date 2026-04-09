@@ -63,11 +63,31 @@ namespace ERPManagementSystem.Controllers
                 Session["Username"] = user.Username;
                 Session["Role"] = user.Role;
 
-                return Json(new
+                if (user.Role=="Admin")
                 {
-                    success = true,
-                    redirectUrl = Url.Action("create", "Teacher")
-                }) ;
+                    return Json(new
+                    {
+                        success = true,
+                        redirectUrl = Url.Action("create", "Teacher")
+                    });
+                }
+                else if (user.Role=="Teacher")
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        redirectUrl = Url.Action("create", "Student")
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+                        success = true,
+                        redirectUrl = Url.Action("create", "Teacher")
+                    });
+                }
+               
             }
             else
             {
