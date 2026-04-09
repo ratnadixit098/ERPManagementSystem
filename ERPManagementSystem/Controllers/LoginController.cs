@@ -84,7 +84,7 @@ namespace ERPManagementSystem.Controllers
                     return Json(new
                     {
                         success = true,
-                        redirectUrl = Url.Action("create", "Teacher")
+                        redirectUrl = Url.Action("StudentDashboard", "StudentDashboard")
                     });
                 }
                

@@ -402,6 +402,7 @@
     <Content Include="Views\Shared\TeacherLayout.cshtml" />
     <Content Include="Views\Attendance\TimeTable.cshtml" />
     <Content Include="Views\StudentDashboard\StudentDashboard.cshtml" />
+    <Content Include="Views\Shared\StudentLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\AdminLayout.cshtml" />
