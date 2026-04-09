@@ -24,5 +24,19 @@ namespace ERPManagementSystem.Models
 
         [Required]
         public TimeSpan EndTime { get; set; }
+
+        public string Day { get; set; }
+        public string Time { get; set; }
+        public string SubjectName { get; set; }
+        public string Section { get; set; }
+        public string Semester { get; set; }
+        public string DepartmentName { get; set; }
+        public string Teacher { get; set; }
+        public bool IsAttendanceDone { get; set; }
+        public string CourseName { get; set; }
+
+        // FIXED
+        public int? IsPresent { get; set; }
+        public string Slot { get; set; }
     }
 }

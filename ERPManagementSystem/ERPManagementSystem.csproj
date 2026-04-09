@@ -136,6 +136,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AttendanceController.cs" />
     <Compile Include="Controllers\ClassController.cs" />
     <Compile Include="Controllers\CollegeController.cs" />
     <Compile Include="Controllers\CourseController.cs" />
@@ -149,12 +150,14 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ReminderController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
+    <Compile Include="Controllers\StudentDashboardController.cs" />
     <Compile Include="Controllers\SubjectController.cs" />
     <Compile Include="Controllers\TeacherController.cs" />
     <Compile Include="Controllers\TimeTableController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Attendance.cs" />
     <Compile Include="Models\CheckSessionAttribute.cs" />
     <Compile Include="Models\Class.cs" />
     <Compile Include="Models\College.cs" />
@@ -397,6 +400,8 @@
     <Content Include="Views\Commitment\Create.cshtml" />
     <Content Include="Views\FeePayment\Create.cshtml" />
     <Content Include="Views\Shared\TeacherLayout.cshtml" />
+    <Content Include="Views\Attendance\TimeTable.cshtml" />
+    <Content Include="Views\StudentDashboard\StudentDashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\AdminLayout.cshtml" />

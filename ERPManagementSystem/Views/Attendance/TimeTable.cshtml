@@ -1,0 +1,277 @@
+﻿@model IEnumerable<ERPManagementSystem.Models.Timetable>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+<style>
+
+    body {
+        background: #0b0f19;
+        color: #fff;
+        font-family: Segoe UI;
+    }
+
+    /* glass card */
+    .dark-card {
+        background: rgba(17,24,39,.6);
+        border-radius: 12px;
+        padding: 15px;
+        border: 1px solid rgba(255,255,255,.05);
+        backdrop-filter: blur(6px);
+    }
+
+    /* table */
+    .attendance-table {
+        background: transparent;
+        color: #e5e7eb;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+        .attendance-table thead {
+            background: rgba(59,130,246,.2);
+            color: #fff;
+        }
+
+        .attendance-table th {
+            border-color: rgba(255,255,255,.08);
+            font-weight: 600;
+        }
+
+        .attendance-table td {
+            border-color: rgba(255,255,255,.05);
+        }
+
+        .attendance-table tbody tr:hover {
+            background: rgba(59,130,246,.08);
+        }
+
+    /* buttons */
+    .btn-primary {
+        background: #3b82f6;
+        border: none;
+        box-shadow: 0 0 10px rgba(59,130,246,.5);
+    }
+
+    .btn-success {
+        background: #22c55e;
+        border: none;
+        box-shadow: 0 0 10px rgba(34,197,94,.5);
+    }
+
+    /* modal */
+    .modal-content {
+        background: #111827;
+        color: #fff;
+        border-radius: 12px;
+    }
+
+    .modal-header {
+        background: rgba(59,130,246,.2);
+        border-bottom: 1px solid rgba(255,255,255,.05);
+    }
+
+    .modal-footer {
+        border-top: 1px solid rgba(255,255,255,.05);
+    }
+
+    /* student table */
+    #studentTable {
+        color: #e5e7eb;
+    }
+
+        #studentTable thead {
+            background: rgba(59,130,246,.2);
+        }
+
+        #studentTable tbody tr:hover {
+            background: rgba(59,130,246,.08);
+        }
+
+        /* checkbox */
+        #studentTable input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+            accent-color: #22c55e;
+        }
+</style>
+
+
+<div class="dark-card">
+
+    <table class="table table-bordered attendance-table">
+
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Course</th>
+                <th>Department</th>
+                <th>Semester</th>
+                <th>Section</th>
+                <th>Teacher</th>
+                <th>Subject</th>
+                <th>Time</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            @foreach (var row in Model)
+            {
+                <tr>
+                    <td>@row.DayOfWeek</td>
+                    <td>@row.CourseName</td>
+                    <td>@row.DepartmentName</td>
+                    <td>@row.Semester</td>
+                    <td>@row.Section</td>
+                    <td>@row.Teacher</td>
+                    <td>@row.SubjectName</td>
+                    <td>@row.StartTime - @row.EndTime</td>
+
+                    <td>
+                        @if (row.IsAttendanceDone)
+                        {
+                            <button class="btn btn-success btn-sm" disabled>
+                                Attendance Done
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-primary btn-sm"
+                                    data-class="@row.ClassId"
+                                    data-subject="@row.SubjectId"
+                                    onclick="openmodal(this)">
+                                Mark Attendance
+                            </button>
+                        }
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+
+    </table>
+
+</div>
+
+
+<!-- Modal -->
+
+<div class="modal fade" id="attendanceModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">Mark Student Attendance</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <table class="table table-bordered" id="studentTable">
+
+                    <thead>
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Enrollment No</th>
+                            <th>Present</th>
+                        </tr>
+                    </thead>
+
+                    <tbody></tbody>
+
+                </table>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" id="saveAttendance">
+                    Save Attendance
+                </button>
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    var selectedClassId = 0;
+    var selectedSubjectId = 0;
+
+    function openmodal(btn) {
+
+        selectedClassId = $(btn).data("class");
+        selectedSubjectId = $(btn).data("subject");
+
+        $("#studentTable tbody").html("");
+
+        $.ajax({
+            url: '/Attendance/GetStudents',
+            type: 'GET',
+            data: { classId: selectedClassId },
+            success: function (data) {
+
+                $.each(data, function (i, v) {
+
+                    $("#studentTable tbody").append(
+                        "<tr>" +
+                        "<td>" + v.StudentName + "</td>" +
+                        "<td>" + v.EnrollmentNo + "</td>" +
+                        "<td><input type='checkbox' class='chk' data-student='" + v.StudentId + "'/></td>" +
+                        "</tr>"
+                    );
+
+                });
+
+                $("#attendanceModal").modal("show");
+
+            }
+        });
+    }
+
+
+    $("#saveAttendance").click(function () {
+
+        var attendance = [];
+
+        $("#studentTable tbody tr").each(function () {
+
+            var studentId = $(this).find(".chk").data("student");
+            var isPresent = $(this).find(".chk").is(":checked");
+
+            attendance.push({
+                StudentId: studentId,
+                ClassId: selectedClassId,
+                SubjectId: selectedSubjectId,
+                IsPresent: isPresent
+            });
+
+        });
+
+        $.ajax({
+            url: '/Attendance/SaveAttendance',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ data: attendance }),
+            success: function () {
+
+                alert("Attendance Saved Successfully");
+                $("#attendanceModal").modal("hide");
+
+            },
+            error: function () {
+                alert("Error while saving attendance");
+            }
+        });
+
+    });
+
+</script>
