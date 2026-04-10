@@ -42,6 +42,35 @@
                     color: #ffffff;
                 }
 
+          /*  .user-menu {
+                position: relative;
+                cursor: pointer;
+                background: #dcdde1;
+                padding: 8px 15px;
+                border-radius: 6px;
+            }*/
+
+            /*.dropdown {
+                display: none;
+                position: absolute;
+                top: 40px;
+                right: 0;
+                background: white;
+                border-radius: 6px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            }
+
+                .dropdown a {
+                    display: block;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    color: black;
+                }
+
+                    .dropdown a:hover {
+                        background: #eee;
+                    }*/
+            /* User Menu Button */
             .user-menu {
                 position: relative;
                 cursor: pointer;
@@ -148,7 +177,7 @@
 <body>
 
     <div class="header">
-        <h2>Welcome to the Student Panel</h2>
+        <h2>Welcome to the Principal Panel</h2>
 
         <div class="user-menu" id="userMenu">
             <i class="fa fa-user-circle"></i>
@@ -170,9 +199,15 @@
         <div class="sidebar">
             <h3><i class="fa fa-dashboard"></i> My Dashboard</h3>
             <hr />
-            <a href="/StudentDashboard/StudentDashboard"><i class="fa fa-home"></i> Dashboard</a>
-            <a href="/FeePayment/Create"><i class="fa fa-user"></i>Pay Fees</a>
-           
+            <a href="#"><i class="fa fa-home"></i> Dashboard</a>
+            <a href="/Student/Create"><i class="fa fa-user"></i> Student Registration</a>
+            <a href="/FeesStructure/Create"><i class="fa fa-graduation-cap"></i>Fees Structure</a>
+            <a href="/Commitment/Create"><i class="fa fa-chalkboard"></i>Fees Commitment</a>
+            <a href="/Department/Create"><i class="fa fa-chalkboard"></i>Add Department</a>
+            <a href="/Course/Create"><i class="fa fa-chalkboard"></i>Add Course</a>
+            <a href="/Class/Create"><i class="fa fa-chalkboard"></i>Add Class</a>
+            <a href="/Subject/Create"><i class="fa fa-chalkboard"></i>Add Subject</a>
+            <a href="/Teacher/Create"><i class="fa fa-chalkboard"></i>Teacher Registration</a>
         </div>
 
         <!-- 🔥 YAHI IMPORTANT PART -->
@@ -183,6 +218,11 @@
     </div>
 
     <script>
+        //$(document).ready(function () {
+        //    $('#userMenu').click(function () {
+        //        $('#dropdown').toggle();
+        //    });
+        //});
         $(document).ready(function () {
             // Toggle the menu
             $('#userMenu').on('click', function (e) {

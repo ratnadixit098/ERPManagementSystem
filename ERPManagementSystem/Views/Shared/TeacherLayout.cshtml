@@ -45,30 +45,60 @@
             .user-menu {
                 position: relative;
                 cursor: pointer;
-                background: #dcdde1;
-                padding: 8px 15px;
-                border-radius: 6px;
+                background: #4a4c4c; /* Slightly lighter than header */
+                color: white;
+                padding: 8px 18px;
+                border-radius: 50px; /* Capsule shape */
+                transition: all 0.3s ease;
+                border: 1px solid rgba(255,255,255,0.1);
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                gap: 8px;
             }
 
+                .user-menu:hover {
+                    background: #575959;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                }
+
+            /* Dropdown Container */
             .dropdown {
                 display: none;
                 position: absolute;
-                top: 40px;
+                top: 55px; /* Spaced slightly away from the button */
                 right: 0;
                 background: white;
-                border-radius: 6px;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+                border-radius: 12px; /* Rounded corners */
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+                min-width: 160px;
+                z-index: 1000;
+                overflow: hidden;
+                border: 1px solid #eee;
+                /* Animation helper */
+                transform: translateY(10px);
+                transition: opacity 0.3s ease, transform 0.3s ease;
             }
 
+                /* The actual Logout Link */
                 .dropdown a {
-                    display: block;
-                    padding: 10px 20px;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    padding: 12px 20px;
                     text-decoration: none;
-                    color: black;
+                    color: #e74c3c; /* Professional Red for Logout */
+                    font-weight: 600;
+                    transition: background 0.2s;
                 }
 
                     .dropdown a:hover {
-                        background: #eee;
+                        background: #fff5f5; /* Light red tint on hover */
+                        color: #c0392b;
+                    }
+
+                    .dropdown a i {
+                        font-size: 16px;
                     }
             /* Layout */
             .container {
@@ -118,14 +148,19 @@
 <body>
 
     <div class="header">
-        <h2>Welcome to the Admin Panel</h2>
+        <h2>Welcome to the Teacher Panel</h2>
 
-        @*<div class="user-menu" id="userMenu">
-                @Session["UserName"] <i class="fa fa-caret-down"></i>
-                <div class="dropdown" id="dropdown">
-                    <a href="/Account/Logout">Logout</a>
-                </div>
-            </div>*@
+        <div class="user-menu" id="userMenu">
+            <i class="fa fa-user-circle"></i>
+            <span>@Session["UserName"]</span>
+            <i class="fa fa-caret-down"></i>
+
+            <div class="dropdown" id="dropdown">
+                <a href="/Login/Logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
     </div>
 
     <div class="container">
@@ -136,13 +171,7 @@
             <h3><i class="fa fa-dashboard"></i> My Dashboard</h3>
             <hr />
             <a href="#"><i class="fa fa-home"></i> Dashboard</a>
-            <a href="/Student/Create"><i class="fa fa-user"></i> Student Registration</a>
-
-            <a href="/Fees/Create"><i class="fa fa-user"></i> Fees Details</a>
-            <a href="/Commitment/Create"><i class="fa fa-graduation-cap"></i>Commitment Details</a>
-            <a href="/FeesStructure/Create"><i class="fa fa-chalkboard"></i>Fees Stucture</a>
-            <a href="/Attendance/TimeTable"><i class="fa fa-list"></i> Time Table</a>
-        <a href="#"><i class="fa fa-list"></i> Student List</a>
+            <a href="/Attendance/TimeTable"><i class="fa fa-user"></i> Mark Attendance</a>
         </div>
 
         <!-- 🔥 YAHI IMPORTANT PART -->
@@ -154,8 +183,15 @@
 
     <script>
         $(document).ready(function () {
-            $('#userMenu').click(function () {
-                $('#dropdown').toggle();
+            // Toggle the menu
+            $('#userMenu').on('click', function (e) {
+                e.stopPropagation(); // Prevents immediate closing
+                $('#dropdown').fadeToggle(200).css('display', 'block');
+            });
+
+            // Close the menu if the user clicks anywhere else on the page
+            $(document).on('click', function () {
+                $('#dropdown').fadeOut(200);
             });
         });
     </script>

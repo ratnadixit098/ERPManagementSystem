@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using ERPManagementSystem.Models;
 
 namespace ERPManagementSystem.Controllers
@@ -76,6 +77,14 @@ namespace ERPManagementSystem.Controllers
                     return Json(new
                     {
                         success = true,
+                        redirectUrl = Url.Action("TimeTable", "Attendance")
+                    });
+                }
+                else if (user.Role == "Principal")
+                {
+                    return Json(new
+                    {
+                        success = true,
                         redirectUrl = Url.Action("create", "Student")
                     });
                 }
@@ -99,6 +108,25 @@ namespace ERPManagementSystem.Controllers
             }
 
         }
+        public ActionResult Logout()
+        {
+            // 1. Clear all session variables
+            Session.Clear();
+            Session.Abandon();
 
+            // 2. Remove the Authentication Cookie
+            FormsAuthentication.SignOut();
+
+            // 3. Optional: Clear specific cookies if you have them
+            if (Request.Cookies["ASP.NET_SessionId"] != null)
+            {
+                Response.Cookies["ASP.NET_SessionId"].Value = string.Empty;
+                Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddMonths(-20);
+            }
+
+            // 4. Redirect to the Login page (or Home)
+            return RedirectToAction("Index", "Home");
+        }
     }
+
 }
