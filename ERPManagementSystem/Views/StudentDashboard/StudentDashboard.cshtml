@@ -147,6 +147,8 @@
         <div class="col-md-3">
             <div class="dashboard-card">
                 <div class="card-content">
+                    <input type="hidden" id="presentVal" value="@ViewBag.Present" />
+                    <input type="hidden" id="absentVal" value="@ViewBag.Absent" />
                     <div>
                         <h6 style="color:white">Attendance</h6>
                         <h3 id="percent">0%</h3>
@@ -268,27 +270,39 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <script>
-var present=@present;
-var absent=@absent;
-var total=present+absent;
+    document.addEventListener("DOMContentLoaded", function () {
 
-document.getElementById("percent").innerText =
-(total==0?0:Math.round(present*100/total))+"%";
+        var present = parseInt(document.getElementById("presentVal").value) || 0;
+        var absent = parseInt(document.getElementById("absentVal").value) || 0;
 
-new Chart(document.getElementById("pieChart"),{
-type:"doughnut",
-data:{
-labels:["Present","Absent"],
-datasets:[{
-data:[present,absent],
-backgroundColor:["#22c55e","#ef4444"],
-borderWidth:0
-}]
-},
-options:{
-cutout:"70%",
-maintainAspectRatio:true
-}
-});
+        // agar data nahi hai to red circle
+        if (present == 0 && absent == 0) {
+            absent = 1;
+        }
+
+        var total = present + absent;
+
+        document.getElementById("percent").innerText =
+            Math.round((present * 100) / total) + "%";
+
+        new Chart(document.getElementById("pieChart"), {
+            type: "doughnut",
+            data: {
+                labels: ["Present", "Absent"],
+                datasets: [{
+                    data: [present, absent],
+                    backgroundColor: ["#22c55e", "#ef4444"],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: "70%",
+                responsive: true
+            }
+        });
+
+    });
 </script>
