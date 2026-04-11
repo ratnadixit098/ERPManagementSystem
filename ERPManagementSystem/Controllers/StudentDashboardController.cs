@@ -10,10 +10,9 @@ namespace ERPManagementSystem.Controllers
     public class StudentDashboardController : Controller
     {
         string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
-
         public ActionResult StudentDashboard()
         {
-            int studentId = 1;
+            int studentId =Convert.ToInt32(Session["StudentId"]);
 
             List<Timetable> list = new List<Timetable>();
 

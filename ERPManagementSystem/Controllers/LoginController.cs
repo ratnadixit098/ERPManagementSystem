@@ -52,7 +52,9 @@ namespace ERPManagementSystem.Controllers
                     {
                         LoginId = Convert.ToInt32(dr["UserId"]),
                         Username = dr["Username"].ToString(),
-                        Role = dr["Role"].ToString()
+                        Role = dr["Role"].ToString(),
+                       StudentId = Convert.ToInt32(dr["StudentId"] == DBNull.Value ? 0 : dr["StudentId"]),
+                        TeacherId = Convert.ToInt32(dr["TeacherId"] == DBNull.Value ? 0 : dr["TeacherId"])
                     };
                 }
             }
@@ -63,6 +65,8 @@ namespace ERPManagementSystem.Controllers
                 Session["LoginId"] = user.LoginId;
                 Session["Username"] = user.Username;
                 Session["Role"] = user.Role;
+                Session["StudentId"] = user.StudentId;
+                Session["TeacherId"] = user.TeacherId;
 
                 if (user.Role=="Admin")
                 {
