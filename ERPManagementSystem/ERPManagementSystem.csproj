@@ -153,6 +153,7 @@
     <Compile Include="Controllers\StudentDashboardController.cs" />
     <Compile Include="Controllers\SubjectController.cs" />
     <Compile Include="Controllers\TeacherController.cs" />
+    <Compile Include="Controllers\TeacherDashboardController.cs" />
     <Compile Include="Controllers\TimeTableController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -174,6 +175,7 @@
     <Compile Include="Models\Student.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\Teacher.cs" />
+    <Compile Include="Models\TeacherDashboard.cs" />
     <Compile Include="Models\TimeTable.cs" />
     <Compile Include="obj\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -403,6 +405,7 @@
     <Content Include="Views\Attendance\TimeTable.cshtml" />
     <Content Include="Views\StudentDashboard\StudentDashboard.cshtml" />
     <Content Include="Views\Shared\StudentLayout.cshtml" />
+    <Content Include="Views\TeacherDashboard\TeacherDashboard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\AdminLayout.cshtml" />
