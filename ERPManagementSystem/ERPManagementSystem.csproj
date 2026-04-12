@@ -405,7 +405,11 @@
     <Content Include="Views\Attendance\TimeTable.cshtml" />
     <Content Include="Views\StudentDashboard\StudentDashboard.cshtml" />
     <Content Include="Views\Shared\StudentLayout.cshtml" />
+
     <Content Include="Views\TeacherDashboard\TeacherDashboard.cshtml" />
+
+    <Content Include="Views\Shared\Principal.cshtml" />
+
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\AdminLayout.cshtml" />
