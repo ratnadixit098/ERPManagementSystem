@@ -39,7 +39,7 @@ namespace ERPManagementSystem.Controllers
             "values(@StudentId,@Semester,@TotalFees,@FeeType)", con);
 
             cmd.Parameters.AddWithValue("@StudentId", model.StudentId);
-            cmd.Parameters.AddWithValue("@Semester", model.Semester);
+            cmd.Parameters.AddWithValue("@Semester", model.Semester == null ? "" : model.Semester);
             cmd.Parameters.AddWithValue("@TotalFees", model.TotalFees);
             cmd.Parameters.AddWithValue("@FeeType", model.FeeType);
 

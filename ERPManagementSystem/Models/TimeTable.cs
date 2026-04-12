@@ -38,5 +38,6 @@ namespace ERPManagementSystem.Models
         // FIXED
         public int? IsPresent { get; set; }
         public string Slot { get; set; }
+        public string TeacherName { get; set; }
     }
 }
