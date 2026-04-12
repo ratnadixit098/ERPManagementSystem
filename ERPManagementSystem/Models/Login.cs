@@ -20,5 +20,18 @@ namespace ERPManagementSystem.Models
         public int? StudentId { get; set; }
 
         public bool IsActive { get; set; }
+
+        public int? Post_Id { get; set; }
+       public int? Department_Id { get; set;}
+       public int? Course_Id { get; set;}
+       public int? Class_Id { get; set;}
+       public string Section { get; set; }
+        public string AcademicYear { get; set; }
+        public string Semester { get; set; }
+        public string CourseName { get; set; }
+        public string DepartmentName { get; set; }
+        public string Teacher_Name { get; set; }
+        public string Stundent_Name { get; set; }
+        public int? CollegeId { get; set; }
     }
 }

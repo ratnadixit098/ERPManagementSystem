@@ -16,12 +16,11 @@ public class AttendanceController : Controller
     public ActionResult TimeTable()
     {
         List<Timetable> list = new List<Timetable>();
-
         using (SqlConnection con = new SqlConnection(conStr))
         {
             SqlCommand cmd = new SqlCommand(@"
         select t.*, c.Semester, c.Section,
-        s.SubjectName, co.CourseName, d.DepartmentName,
+        s.SubjectName, co.CourseName, d.DepartmentName,teacher_Name=FirstName+' '+LastName,
         case when exists(
             select 1 from Attendance a
             where a.ClassId = t.ClassId
@@ -33,7 +32,7 @@ public class AttendanceController : Controller
         inner join Subject s on s.SubjectId=t.SubjectId
         inner join Course co on co.CourseId=c.CourseId
         inner join Department d on d.DepartmentId=co.DepartmentId
-        ", con);
+		inner join teacher on teacher.TeacherId= t.TeacherId and t.TeacherId="+ Convert.ToInt32(Session["TeacherId"]) + " ", con);
 
             con.Open();
             SqlDataReader dr = cmd.ExecuteReader();
@@ -53,8 +52,9 @@ public class AttendanceController : Controller
                     DayOfWeek = dr["DayOfWeek"].ToString(),
                     StartTime = (TimeSpan)dr["StartTime"],
                     EndTime = (TimeSpan)dr["EndTime"],
-                    IsAttendanceDone = Convert.ToBoolean(dr["IsAttendanceDone"])
-                });
+                    IsAttendanceDone = Convert.ToBoolean(dr["IsAttendanceDone"]),
+                    TeacherName = dr["teacher_Name"].ToString()
+                }) ;
             }
         }
 

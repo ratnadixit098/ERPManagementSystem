@@ -22,5 +22,7 @@ namespace ERPManagementSystem.Models
         public string Barcode { get; set; }
         public int PostId { get; set; }
         public DateTime AdmissionDate { get; set; }
+        public int YearOfStudent { get; set; }
+        public int Semester { get; set; }
     }
 }
