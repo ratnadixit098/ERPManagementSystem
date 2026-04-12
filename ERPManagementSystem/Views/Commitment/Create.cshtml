@@ -3,153 +3,263 @@
 @{
     Layout = "~/Views/Shared/Principal.cshtml";
 }
-<script src="~/Scripts/jquery-3.7.0.min.js"></script>
 
-<h3>Fee Commitment</h3>
-@if (TempData["Success"] != null)
-{
-    <script>
-        alert('@TempData["Success"]');
-    </script>
-}
-@using (Html.BeginForm())
-{
-    <div class="row">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
-        <div class="col-md-6">
+<style>
+    body {
+        background-color: #020617 !important;
+        color: #f1f5f9 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+    }
 
-            <label>College</label>
-            @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "Select", new { @class = "form-control", id = "CollegeId" })
+    /* 💎 Main Form Card */
+    .form-card {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        margin-bottom: 30px;
+    }
 
-            <label>Department</label>
-            <select id="DepartmentId" class="form-control"></select>
+    .form-header {
+        background: rgba(255, 255, 255, 0.02);
+        padding: 25px 30px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
 
-            <label>Course</label>
-            <select id="CourseId" class="form-control"></select>
+    .header-icon {
+        width: 45px;
+        height: 45px;
+        background: linear-gradient(135deg, #3b82f6, #6366f1);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+    }
 
-            <label>Class</label>
-            <select id="ClassId" class="form-control"></select>
+    .form-header h4 {
+        margin: 0;
+        font-weight: 700;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
 
-            <label>Student</label>
-            @Html.DropDownListFor(m => m.StudentId, new List<SelectListItem>(), "Select", new { @class = "form-control", id = "StudentId" })
+    /* ⚡ Form Styling */
+    label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #94a3b8;
+        margin-bottom: 8px;
+        margin-top: 15px;
+        display: block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
 
+    .form-control, .form-select {
+        background: rgba(2, 6, 23, 0.6) !important;
+        border: 1px solid #334155 !important;
+        color: #f1f5f9 !important;
+        border-radius: 10px;
+        padding: 10px 15px;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1) !important;
+        }
+
+    /* 🗓️ Installment Section */
+    #installmentDiv {
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 16px;
+        border: 1px dashed rgba(59, 130, 246, 0.3);
+        padding: 20px;
+        margin-top: 25px;
+    }
+
+    .table {
+        color: #f1f5f9;
+        margin-top: 15px;
+    }
+
+        .table th {
+            border-bottom: 1px solid #334155;
+            color: #3b82f6;
+            font-size: 14px;
+        }
+
+        .table td {
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            vertical-align: middle;
+        }
+
+    /* 🚀 Buttons */
+    .btn-add {
+        background: rgba(59, 130, 246, 0.1);
+        color: #3b82f6;
+        border: 1px solid rgba(59, 130, 246, 0.2);
+        border-radius: 8px;
+        font-weight: 600;
+        padding: 8px 20px;
+        transition: 0.3s;
+    }
+
+        .btn-add:hover {
+            background: #3b82f6;
+            color: white;
+        }
+
+    .btn-remove {
+        background: rgba(239, 68, 68, 0.1);
+        color: #ef4444;
+        border: none;
+        border-radius: 6px;
+        width: 35px;
+        height: 35px;
+    }
+
+    .btn-save {
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 30px;
+        font-weight: 700;
+        width: 100%;
+        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+</style>
+
+<div class="container container-main">
+    <div class="card form-card">
+        <div class="form-header">
+            <div class="header-icon"><i class="fa fa-handshake"></i></div>
+            <div>
+                <h4>Fee Commitment</h4>
+                <small class="text-muted">Setup student fee plans and installments</small>
+            </div>
         </div>
 
-        <div class="col-md-6">
-
-            <label>Semester</label>
-            @Html.TextBoxFor(m => m.Semester, new { @class = "form-control" })
-
-            <label>Total Fees</label>
-            @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control" })
-
-            <label>Fee Type</label>
-            @Html.DropDownListFor(m => m.FeeType,
-            new List<SelectListItem>
+        <div class="card-body p-4 p-lg-5">
+            @if (TempData["Success"] != null)
             {
-            new SelectListItem{Text="OnTime",Value="OnTime"},
-            new SelectListItem{Text="Installment",Value="Installment"}
-            },
-            "Select",
-            new { @class = "form-control", id = "FeeType" })
+                <div class="alert alert-success bg-success bg-opacity-10 border-success border-opacity-25 text-success mb-4 rounded-4">
+                    <i class="fa fa-check-circle me-2"></i> @TempData["Success"]
+                </div>
+            }
 
+            @using (Html.BeginForm())
+            {
+                <div class="row g-4">
+                    <div class="col-md-6 border-end border-white border-opacity-10 pe-md-4">
+                        <label>College</label>
+                        @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "- Select College -", new { @class = "form-select", id = "CollegeId" })
+
+                        <label>Department</label>
+                        <select id="DepartmentId" class="form-select"><option>- Select Department -</option></select>
+
+                        <label>Course</label>
+                        <select id="CourseId" class="form-select"><option>- Select Course -</option></select>
+
+                        <label>Class</label>
+                        <select id="ClassId" class="form-select"><option>- Select Class -</option></select>
+
+                        <label>Student</label>
+                        @Html.DropDownListFor(m => m.StudentId, new List<SelectListItem>(), "- Select Student -", new { @class = "form-select", id = "StudentId" })
+                    </div>
+
+                    <div class="col-md-6 ps-md-4">
+                        <label>Semester</label>
+                        @Html.TextBoxFor(m => m.Semester, new { @class = "form-control", placeholder = "Current Sem" })
+
+                        <label>Total Committed Fees</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary text-muted">₹</span>
+                            @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control", placeholder = "0.00" })
+                        </div>
+
+                        <label>Payment Mode</label>
+                        @Html.DropDownListFor(m => m.FeeType,
+                        new List<SelectListItem> {
+                            new SelectListItem{Text="On-Time Payment",Value="OnTime"},
+                            new SelectListItem{Text="Installment Plan",Value="Installment"}
+                        }, "- Select Plan -", new { @class = "form-select", id = "FeeType" })
+
+                        <div id="installmentDiv">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="m-0 text-primary small fw-bold">INSTALLMENT SCHEDULE</h6>
+                                <button type="button" onclick="addRow()" class="btn btn-add btn-sm">
+                                    <i class="fa fa-plus me-1"></i> Add Row
+                                </button>
+                            </div>
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>Due Date</th>
+                                        <th>Amount</th>
+                                        <th width="50px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-5 pt-3 border-top border-white border-opacity-10">
+                    <button type="submit" class="btn btn-save">
+                        <i class="fa fa-save me-2"></i> Save Fee Commitment
+                    </button>
+                </div>
+            }
         </div>
-
     </div>
-
-    <div id="installmentDiv" style="display:none">
-
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Date</th>
-                    <th>Amount</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-
-        <button type="button" onclick="addRow()" class="btn btn-primary">Add Row</button>
-
-    </div>
-
-    <br />
-    <input type="submit" class="btn btn-success" value="Save Commitment" />
-
-}
+</div>
 
 <script>
-
+    // Toggle Installment Div
     $("#FeeType").change(function () {
-
         if ($(this).val() == "Installment")
-            $("#installmentDiv").show();
-        else
-            $("#installmentDiv").hide();
-
+            $("#installmentDiv").fadeIn();
+        else {
+            $("#installmentDiv").fadeOut();
+            $("table tbody").empty();
+        }
     });
 
     function addRow() {
         var row = `<tr>
-<td><input type="date" name="InstallmentDate" class="form-control"/></td>
-<td><input type="text" name="InstallmentAmount" class="form-control"/></td>
-<td><button type="button" onclick="removeRow(this)">X</button></td>
-</tr>`;
-        $("table tbody").append(row);
+            <td><input type="date" name="InstallmentDate" class="form-control form-control-sm"/></td>
+            <td><input type="text" name="InstallmentAmount" class="form-control form-control-sm" placeholder="Amount"/></td>
+            <td class="text-center"><button type="button" onclick="removeRow(this)" class="btn-remove"><i class="fa fa-times"></i></button></td>
+        </tr>`;
+        $("table tbody").append(row).hide().fadeIn(300);
     }
 
     function removeRow(btn) {
-        $(btn).closest("tr").remove();
+        $(btn).closest("tr").fadeOut(300, function () { $(this).remove(); });
     }
 
-</script>
-
-@*<script>
-        // cascading
-        $("#CollegeId").change(function () {
-            $.get("/Commitment/GetDepartment", { collegeId: $(this).val() }, function (data) {
-                $("#DepartmentId").empty();
-                $.each(data, function (i, row) {
-                    $("#DepartmentId").append("<option value='" + row.DepartmentId + "'>" + row.DepartmentName + "</option>");
-                });
-            });
-        });
-
-        $("#DepartmentId").change(function () {
-            $.get("/Commitment/GetCourse", { departmentId: $(this).val() }, function (data) {
-                $("#CourseId").empty();
-                $.each(data, function (i, row) {
-                    $("#CourseId").append("<option value='" + row.CourseId + "'>" + row.CourseName + "</option>");
-                });
-            });
-        });
-
-        $("#CourseId").change(function () {
-            $.get("/Commitment/GetClass", { courseId: $(this).val() }, function (data) {
-                $("#ClassId").empty();
-                $.each(data, function (i, row) {
-                    $("#ClassId").append("<option value='" + row.ClassId + "'>" + row.Section + "</option>");
-                });
-            });
-        });
-
-        $("#ClassId").change(function () {
-            $.get("/Commitment/GetStudent", { classId: $(this).val() }, function (data) {
-                $("#StudentId").empty();
-                $.each(data, function (i, row) {
-                    $("#StudentId").append("<option value='" + row.StudentId + "'>" + row.StudentName + "</option>");
-                });
-            });
-        });
-
-    </script>*@
-
-<script>
+    // Cascading Logic
     $("#CollegeId").change(function () {
         $.get("/Commitment/GetDepartment", { collegeId: $(this).val() }, function (data) {
-            $("#DepartmentId").empty();
-            $("#DepartmentId").append("<option value=''>-Select-</option>");
+            $("#DepartmentId").empty().append("<option value=''>-Select-</option>");
             $.each(data, function (i, row) {
                 $("#DepartmentId").append("<option value='" + row.DepartmentId + "'>" + row.DepartmentName + "</option>");
             });
@@ -158,8 +268,7 @@
 
     $("#DepartmentId").change(function () {
         $.get("/Commitment/GetCourse", { departmentId: $(this).val() }, function (data) {
-            $("#CourseId").empty();
-            $("#CourseId").append("<option value=''>-Select-</option>");
+            $("#CourseId").empty().append("<option value=''>-Select-</option>");
             $.each(data, function (i, row) {
                 $("#CourseId").append("<option value='" + row.CourseId + "'>" + row.CourseName + "</option>");
             });
@@ -168,8 +277,7 @@
 
     $("#CourseId").change(function () {
         $.get("/Commitment/GetClass", { courseId: $(this).val() }, function (data) {
-            $("#ClassId").empty();
-            $("#ClassId").append("<option value=''>-Select-</option>");
+            $("#ClassId").empty().append("<option value=''>-Select-</option>");
             $.each(data, function (i, row) {
                 $("#ClassId").append("<option value='" + row.ClassId + "'>" + row.Section + "</option>");
             });
@@ -178,8 +286,7 @@
 
     $("#ClassId").change(function () {
         $.get("/Commitment/GetStudent", { classId: $(this).val() }, function (data) {
-            $("#StudentId").empty();
-            $("#StudentId").append("<option value=''>-Select-</option>");
+            $("#StudentId").empty().append("<option value=''>-Select-</option>");
             $.each(data, function (i, row) {
                 $("#StudentId").append("<option value='" + row.StudentId + "'>" + row.StudentName + "</option>");
             });

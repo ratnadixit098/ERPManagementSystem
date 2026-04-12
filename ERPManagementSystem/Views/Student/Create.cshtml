@@ -1,151 +1,221 @@
 ﻿@model ERPManagementSystem.Models.Student
+
 @{
     Layout = "~/Views/Shared/Principal.cshtml";
 }
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
 <style>
-   /* body {
-        background: #f5f7fb;
-    }
-
     body {
-        background: #f5f7fb;
-        background-image: url('/content/images/OIP (1).jfif');
-        background-repeat: no-repeat;
-        background-size: cover;
-    }*/
-
-    .form-card {
-        border-radius: 18px;
-        max-width: 950px;
-        margin: auto;
+        background-color: #020617 !important;
+        background-image: radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.15) 0, transparent 50%), radial-gradient(at 50% 0%, rgba(16, 185, 129, 0.05) 0, transparent 50%) !important;
+        color: #f1f5f9 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        min-height: 100vh;
     }
 
+    
+
+    /* 💎 Modern Glass Card */
+    .form-card {
+        background: rgba(15, 23, 42, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        overflow: hidden;
+    }
+
+    /* 🎨 Header with Gradient */
     .form-header {
-        background: linear-gradient(135deg,#28a745,#1e7e34);
+        background: rgba(255, 255, 255, 0.02);
+        padding: 30px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .header-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #3b82f6, #10b981);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
         color: white;
-        border-radius: 18px 18px 0 0;
-        padding: 18px;
+        box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+    }
+
+    .form-header h4 {
+        margin: 0;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        background: linear-gradient(to right, #fff, #94a3b8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* 📝 Section Labels */
+    .section-title {
+        font-size: 12px;
+        text-transform: uppercase;
+        font-weight: 700;
+        color: #3b82f6;
+        letter-spacing: 1.5px;
+        margin-bottom: 20px;
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .section-title::after {
+            content: "";
+            height: 1px;
+            flex-grow: 1;
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+    /* ⚡ Inputs */
+    label {
+        font-size: 14px;
+        font-weight: 500;
+        color: #94a3b8;
+        margin-bottom: 8px;
     }
 
     .form-control, .form-select {
-        border-radius: 10px;
+        background: rgba(2, 6, 23, 0.6) !important;
+        border: 1px solid #334155 !important;
+        color: #f1f5f9 !important;
+        border-radius: 12px;
+        padding: 12px 16px;
+        transition: all 0.2s ease-in-out;
     }
 
-    label {
+        .form-control:focus, .form-select:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15) !important;
+            background: #020617 !important;
+        }
+
+    /* 🚀 Submit Button */
+    .btn-submit {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 14px 30px;
         font-weight: 600;
+        transition: all 0.3s;
+        box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
     }
-    @@media (min-width: 1200px) {
-    .container, .container-lg, .container-md, .container-sm, .container-xl {
-        max-width: 1323px !important;
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(59, 130, 246, 0.4);
+            color: white;
+        }
+
+    /* ✅ Custom Success Alert */
+    .alert-modern {
+        background: rgba(16, 185, 129, 0.1);
+        border: 1px solid rgba(16, 185, 129, 0.2);
+        color: #34d399;
+        border-radius: 16px;
+        padding: 15px 25px;
+        margin-bottom: 25px;
     }
-}
 </style>
 
-@if (TempData["Success"] != null)
-{
-    <div class="container mt-3" style="max-width:950px;">
-        <div class="alert alert-success">
-            @TempData["Success"]
+<div class="container container-main">
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-modern d-flex align-items-center">
+            <i class="fa-solid fa-circle-check me-2"></i> @TempData["Success"]
         </div>
-    </div>
-}
+    }
 
-<div class="container mt-4">
-    <div class="card shadow form-card">
-
+    <div class="card form-card">
         <div class="form-header">
-            <h4><i class="fa fa-user-graduate"></i> Student Entry</h4>
+            <div class="header-icon">
+                <i class="fa fa-user-graduate"></i>
+            </div>
+            <div>
+                <h4>Student Registration</h4>
+                <small class="text-muted">Fill in the academic and personal details below</small>
+            </div>
         </div>
 
-        <div class="card-body">
-
+        <div class="card-body p-4 p-lg-5">
             @using (Html.BeginForm())
             {
-                <div class="row g-3">
-
-                    <div class="col-sm-6">
+                <div class="section-title">Academic Details</div>
+                <div class="row g-4 mb-5">
+                    <div class="col-md-4">
                         <label>Enrollment No</label>
-                        @Html.TextBoxFor(x => x.EnrollmentNo,
-                        new { @class = "form-control", required = "required" })
+                        @Html.TextBoxFor(x => x.EnrollmentNo, new { @class = "form-control", placeholder = "EX: 2024-001" })
                     </div>
-
-                    <div class="col-sm-6">
+                    <div class="col-md-4">
                         <label>Admission Date</label>
-                        @Html.TextBoxFor(x => x.AdmissionDate,
-                        new { @class = "form-control", type = "date", required = "required" })
+                        @Html.TextBoxFor(x => x.AdmissionDate, new { @class = "form-control", type = "date" })
                     </div>
-                    <div class="col-sm-6">
-                        <label>Post</label>
-                        @Html.DropDownListFor(x => x.PostId,
-                        ViewBag.PostList as IEnumerable<SelectListItem>,
-                        "Select Post",
-                        new { @class = "form-select", required = "required" })
+                    <div class="col-md-4">
+                        <label>Target Post</label>
+                        @Html.DropDownListFor(x => x.PostId, ViewBag.PostList as IEnumerable<SelectListItem>, "Select Post", new { @class = "form-select" })
                     </div>
-
-                    <div class="col-sm-6">
+                    <div class="col-md-6">
                         <label>Course</label>
-                        @Html.DropDownListFor(x => x.CourseId,
-                        ViewBag.CourseList as IEnumerable<SelectListItem>,
-                        "Select Course",
-                        new { @class = "form-select", required = "required" })
+                        @Html.DropDownListFor(x => x.CourseId, ViewBag.CourseList as IEnumerable<SelectListItem>, "Select Course", new { @class = "form-select" })
                     </div>
-
-                    <div class="col-sm-6">
-                        <label>Class</label>
-                        @Html.DropDownListFor(x => x.ClassId,
-                        ViewBag.ClassList as IEnumerable<SelectListItem>,
-                        "Select Class",
-                        new { @class = "form-select", required = "required" })
+                    <div class="col-md-6">
+                        <label>Class/Section</label>
+                        @Html.DropDownListFor(x => x.ClassId, ViewBag.ClassList as IEnumerable<SelectListItem>, "Select Class", new { @class = "form-select" })
                     </div>
-
-                    <div class="col-sm-6">
-                        <label>First Name</label>
-                        @Html.TextBoxFor(x => x.FirstName,
-                        new { @class = "form-control", required = "required" })
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label>Last Name</label>
-                        @Html.TextBoxFor(x => x.LastName,
-                        new { @class = "form-control" })
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label>Mobile</label>
-                        @Html.TextBoxFor(x => x.Mobile,
-                        new { @class = "form-control", maxlength = "10" })
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label>Email</label>
-                        @Html.TextBoxFor(x => x.Email,
-                        new { @class = "form-control", type = "email" })
-                    </div>
-
-                    <div class="col-sm-6">
-                        <label>Father Name</label>
-                        @Html.TextBoxFor(x => x.FatherName,
-                        new { @class = "form-control" })
-                    </div>
-
-                    <div class="col-sm-12">
-                        <label>Address</label>
-                        @Html.TextAreaFor(x => x.Address,
-                        new { @class = "form-control", rows = "3" })
-                    </div>
-
                 </div>
 
-                <div class="text-end mt-4">
-                    <button type="submit" class="btn btn-success">
-                        <i class="fa fa-save"></i> Save Student
+                <div class="section-title">Personal Information</div>
+                <div class="row g-4 mb-4">
+                    <div class="col-md-6">
+                        <label>First Name</label>
+                        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", placeholder = "Enter first name" })
+                    </div>
+                    <div class="col-md-6">
+                        <label>Last Name</label>
+                        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", placeholder = "Enter last name" })
+                    </div>
+                    <div class="col-md-6">
+                        <label>Mobile Number</label>
+                        @Html.TextBoxFor(x => x.Mobile, new { @class = "form-control", placeholder = "10 digit number" })
+                    </div>
+                    <div class="col-md-6">
+                        <label>Email Address</label>
+                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email", placeholder = "example@domain.com" })
+                    </div>
+                    <div class="col-md-12">
+                        <label>Father's Name</label>
+                        @Html.TextBoxFor(x => x.FatherName, new { @class = "form-control", placeholder = "Full name of father" })
+                    </div>
+                    <div class="col-md-12">
+                        <label>Current Address</label>
+                        @Html.TextAreaFor(x => x.Address, new { @class = "form-control", rows = "3", placeholder = "Complete residential address" })
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-3 mt-5">
+                    <button type="reset" class="btn btn-outline-secondary border-0 text-white-50 px-4">Discard</button>
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fa fa-save me-2"></i> Finalize & Save Student
                     </button>
                 </div>
             }
-
         </div>
     </div>
 </div>
