@@ -67,8 +67,8 @@ namespace ERPManagementSystem.Controllers
                         Teacher_Name = Convert.ToString(dr["Teacher_Name"] == DBNull.Value ? 0 : dr["Teacher_Name"]),
                         Stundent_Name = Convert.ToString(dr["Stundent_Name"] == DBNull.Value ? 0 : dr["Stundent_Name"]),
                         CollegeId = Convert.ToInt32(dr["CollegeId"] == DBNull.Value ? 0 : dr["CollegeId"]),
-                        CourseName = Convert.ToString(dr["CourseName"] == DBNull.Value ? 0 : dr["CourseName"])
-
+                        CourseName = Convert.ToString(dr["CourseName"] == DBNull.Value ? 0 : dr["CourseName"]),
+                        CollageName = Convert.ToString(dr["CollageName"] == DBNull.Value ? 0 : dr["CollageName"]),
                     };
                 }
             }
@@ -94,14 +94,7 @@ namespace ERPManagementSystem.Controllers
                 Session["Stundent_Name"] = user.Stundent_Name;
                 Session["CollegeId"] = user.CollegeId;
                 Session["CourseName"] = user.CourseName;
-
-
-
-
-
-
-
-
+                Session["CollageName"] = user.CollageName;
 
                 if (user.Role=="Admin")
                 {
