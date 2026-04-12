@@ -2,207 +2,98 @@
 @{
     Layout = "~/Views/Shared/StudentLayout.cshtml";
 }
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
 <script src="~/Scripts/jquery-3.7.0.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<style>
-    body {
-        background-color: #020617 !important;
-        color: #f1f5f9 !important;
-        font-family: 'Plus Jakarta Sans', sans-serif;
+<script>
+    $(document).ready(function () {
+        $('#CollegeId').val('@Session["CollageName"]')
+        $('#CollegeId').attr('disabled', true);
+        $('#DepartmentId').val('@Session["DepartmentName"]')
+        $('#DepartmentId').attr('disabled', true);
+        $('#CourseId').val('@Session["CourseName"]')
+        $('#CourseId').attr('disabled', true);
+        $('#ClassId').val('@Session["Section"]')
+        $('#ClassId').attr('disabled', true);
+        $('#StudentId').val('@Session["Stundent_Name"]')
+        $('#StudentId').attr('disabled', true);
+        GetStudentFeeDetails();
+    })
+
+    function GetStudentFeeDetails() {
+            $.get("/FeePayment/GetFeeDetails",
+                { studentId:'@Session["StudentId"]' },
+                function (data) {
+
+                    $("#FeeType").val(data.FeeType);
+                    $("#TotalFee").val(data.TotalFee);
+                    $("#PaidAmount").val(data.PaidAmount);
+                    $("#RemainingAmount").val(data.Remaining);
+
+                    if (parseFloat(data.Remaining) > 0)
+                        $("#payBtn").prop("disabled", false);
+                    else
+                        $("#payBtn").prop("disabled", true);
+                });
     }
+</script>
+<h3>Student Fee Payment</h3>
+<div class="row">
 
-    /* 💎 Transaction Card */
-    .payment-card {
-        background: rgba(15, 23, 42, 0.7);
-        backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 24px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        overflow: hidden;
-    }
+    <div class="col-md-6">
 
-    .payment-header {
-        background: rgba(255, 255, 255, 0.02);
-        padding: 25px 30px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
+        <label>College</label>
+        @*@Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "-Select-", new { @class = "form-control", id = "CollegeId" })*@
+        @Html.TextBoxFor(model => model.CollageId, new { @class = "form-control", @id = "CollegeId" })
 
-    .header-icon {
-        width: 45px;
-        height: 45px;
-        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 20px;
-        box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-    }
-
-    /* 📊 Fee Summary Tiles */
-    .fee-summary-box {
-        background: rgba(2, 6, 23, 0.5);
-        border: 1px solid rgba(255, 255, 255, 0.05);
-        border-radius: 16px;
-        padding: 15px;
-        text-align: center;
-    }
-
-    .fee-label {
-        font-size: 11px;
-        text-transform: uppercase;
-        color: #94a3b8;
-        letter-spacing: 1px;
-    }
-
-    .fee-value {
-        font-size: 18px;
-        font-weight: 700;
-        color: #fff;
-        margin-top: 5px;
-    }
-
-    /* ⚡ Form Elements */
-    label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #94a3b8;
-        margin-top: 15px;
-        display: block;
-    }
-
-    .form-control, .form-select {
-        background: rgba(2, 6, 23, 0.6) !important;
-        border: 1px solid #334155 !important;
-        color: #f1f5f9 !important;
-        border-radius: 12px;
-        padding: 12px 15px;
-    }
-
-        .form-control:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            border-style: dashed;
-        }
-
-    /* 🚀 Pay Button */
-    .btn-pay {
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
-        border: none;
-        border-radius: 12px;
-        padding: 15px;
-        font-weight: 700;
-        width: 100%;
-        margin-top: 25px;
-        transition: 0.3s;
-        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
-    }
-
-        .btn-pay:hover:not(:disabled) {
-            transform: translateY(-2px);
-            filter: brightness(1.1);
-        }
-
-        .btn-pay:disabled {
-            background: #1e293b;
-            color: #475569;
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-</style>
-
-<div class="container container-main">
-    <div class="card payment-card mx-auto" style="max-width: 1000px;">
-        <div class="payment-header">
-            <div class="header-icon"><i class="fa fa-credit-card"></i></div>
-            <div>
-                <h4 class="m-0 fw-bold">Online Fee Payment</h4>
-                <small class="text-muted">Securely pay your college dues via Razorpay</small>
-            </div>
-        </div>
-
-        <div class="card-body p-4 p-lg-5">
-            <div class="row g-4">
-                <div class="col-lg-6">
-                    <h6 class="text-primary fw-bold mb-3 small uppercase">Academic Selection</h6>
-
-                    <label>College</label>
-                    @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "-Select College-", new { @class = "form-select", id = "CollegeId" })
-
-                    <label>Department</label>
-                    <select id="DepartmentId" class="form-select"><option>-Select-</option></select>
-
-                    <label>Course</label>
-                    <select id="CourseId" class="form-select"><option>-Select-</option></select>
-
-                    <label>Class</label>
-                    <select id="ClassId" class="form-select"><option>-Select-</option></select>
-
-                    <label>Student Name</label>
-                    <select id="StudentId" class="form-select"><option>-Select-</option></select>
-                </div>
-
-                <div class="col-lg-6 px-lg-4">
-                    <div class="row g-2 mb-4">
-                        <div class="col-6">
-                            <div class="fee-summary-box">
-                                <div class="fee-label">Fee Type</div>
-                                <input type="text" id="FeeType" class="bg-transparent border-0 text-center w-100 fw-bold" disabled value="---" />
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="fee-summary-box" style="border-color: rgba(59, 130, 246, 0.3)">
-                                <div class="fee-label">Total Fee</div>
-                                <div class="fee-value text-info">₹<span id="txtTotal">0</span></div>
-                                <input type="hidden" id="TotalFee" />
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="fee-summary-box">
-                                <div class="fee-label">Already Paid</div>
-                                <div class="fee-value text-success">₹<span id="txtPaid">0</span></div>
-                                <input type="hidden" id="PaidAmount" />
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="fee-summary-box" style="border-color: rgba(239, 68, 68, 0.3)">
-                                <div class="fee-label">Remaining</div>
-                                <div class="fee-value text-danger">₹<span id="txtRemaining">0</span></div>
-                                <input type="hidden" id="RemainingAmount" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <label class="text-white">Amount to Pay Now (INR)</label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-dark border-secondary text-white-50">₹</span>
-                        <input type="number" id="PayAmount" class="form-control form-control-lg fw-bold text-success" placeholder="Enter amount" />
-                    </div>
-
-                    <button id="payBtn" class="btn btn-pay" disabled>
-                        <i class="fa fa-shield-check me-2"></i> PROCEED TO PAYMENT
-                    </button>
-
-                    <p class="text-center mt-3 small text-muted">
-                        <i class="fa fa-lock me-1"></i> Secured by Razorpay 256-bit Encryption
-                    </p>
-                </div>
-            </div>
-        </div>
+        <label>Department</label>
+        @*<select id="DepartmentId" class="form-control">
+                <option>-Select-</option>
+            </select>*@
+        @Html.TextBoxFor(model => model.DepartmentId, new { @class = "form-control", @id = "DepartmentId" })
+        <label>Course</label>
+        @*<select id="CourseId" class="form-control">
+                <option>-Select-</option>
+            </select>*@
+        @Html.TextBoxFor(model => model.CourseId, new { @class = "form-control", @id = "CourseId" })
+        <label>Class</label>
+        @*<select id="ClassId" class="form-control">
+                <option>-Select-</option>
+            </select>*@
+        @Html.TextBoxFor(model => model.ClassId, new { @class = "form-control", @id = "ClassId" })
+        <label>Student</label>
+        @*<select id="StudentId" class="form-control">
+                <option>-Select-</option>
+            </select>*@
+        @Html.TextBoxFor(model => model.StudentId, new { @class = "form-control", @id = "StudentId" })
     </div>
+
+    <div class="col-md-6">
+
+        <label>Fee Type</label>
+        <input type="text" id="FeeType" class="form-control" disabled />
+
+        <label>Total Fee</label>
+        <input type="text" id="TotalFee" class="form-control" disabled />
+
+        <label>Paid Amount</label>
+        <input type="text" id="PaidAmount" class="form-control" disabled />
+
+        <label>Remaining</label>
+        <input type="text" id="RemainingAmount" class="form-control" disabled />
+
+        <label>Pay Amount</label>
+        <input type="text" id="PayAmount" class="form-control" />
+
+        <br />
+        <button id="payBtn" class="btn btn-success" disabled>Pay Now</button>
+
+    </div>
+
 </div>
 
 <script>
-    // --- CASCADING DROPDOWNS ---
+
     $("#CollegeId").change(function () {
         $.get("/FeePayment/GetDepartment", { collegeId: $(this).val() }, function (data) {
             $("#DepartmentId").empty().append("<option>-Select-</option>");
@@ -239,61 +130,71 @@
         });
     });
 
-    // --- GET FEE DETAILS ---
     $("#StudentId").change(function () {
-        $.get("/FeePayment/GetFeeDetails", { studentId: $(this).val() }, function (data) {
-            $("#FeeType").val(data.FeeType);
-            $("#TotalFee").val(data.TotalFee); $("#txtTotal").text(data.TotalFee);
-            $("#PaidAmount").val(data.PaidAmount); $("#txtPaid").text(data.PaidAmount);
-            $("#RemainingAmount").val(data.Remaining); $("#txtRemaining").text(data.Remaining);
 
-            if (parseFloat(data.Remaining) > 0)
-                $("#payBtn").prop("disabled", false);
-            else
-                $("#payBtn").prop("disabled", true);
-        });
+        $.get("/FeePayment/GetFeeDetails",
+            { studentId: $(this).val() },
+            function (data) {
+
+                $("#FeeType").val(data.FeeType);
+                $("#TotalFee").val(data.TotalFee);
+                $("#PaidAmount").val(data.PaidAmount);
+                $("#RemainingAmount").val(data.Remaining);
+
+                if (parseFloat(data.Remaining) > 0)
+                    $("#payBtn").prop("disabled", false);
+                else
+                    $("#payBtn").prop("disabled", true);
+            });
     });
 
-    // --- VALIDATION ---
     $("#PayAmount").keyup(function () {
+
         var remaining = parseFloat($("#RemainingAmount").val());
         var pay = parseFloat($(this).val());
+
         if (pay > remaining) {
             alert("Pay amount cannot exceed remaining fee");
             $(this).val("");
         }
+
     });
 
-    // --- RAZORPAY INTEGRATION ---
     $("#payBtn").click(function (e) {
-        e.preventDefault();
-        var amount = $("#PayAmount").val();
-        var studentId = $("#StudentId").val();
 
-        if (!amount || amount <= 0) { alert("Please enter a valid amount"); return; }
+        e.preventDefault();
+
+        var amount = $("#PayAmount").val();
+        var studentId = '@Session["StudentId"]';
 
         $.get("/FeePayment/CreateOrder", { amount: amount }, function (orderId) {
+
             var options = {
                 "key": "rzp_test_SZrS5COEYmgiPS",
                 "amount": amount * 100,
                 "currency": "INR",
                 "name": "College Fee Payment",
-                "description": "Student Fee Payment",
+                "description": "Student Fee",
                 "order_id": orderId,
+
                 "handler": function (response) {
+
                     $.post("/FeePayment/SavePayment", {
                         studentId: studentId,
                         payAmount: amount,
                         paymentId: response.razorpay_payment_id
                     }, function () {
+
                         alert("Payment Successful");
                         location.reload();
+
                     });
-                },
-                "theme": { "color": "#3b82f6" }
+                }
             };
+
             var rzp = new Razorpay(options);
             rzp.open();
         });
     });
+
 </script>
