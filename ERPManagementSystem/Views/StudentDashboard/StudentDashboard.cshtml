@@ -2,140 +2,192 @@
 @{
     Layout = "~/Views/Shared/StudentLayout.cshtml";
 }
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
     body {
-        background: #0b0f19;
-        color: #fff;
-        font-family: Segoe UI;
+        background-color: #020617 !important;
+        background-image: radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.15) 0, transparent 50%) !important;
+        color: #f1f5f9 !important;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-    /* cards */
+    /* 💎 Glassmorphism Dashboard Cards */
     .dashboard-card {
-        background: rgba(17,24,39,.6);
-        border-radius: 12px;
-        padding: 18px;
-        border: 1px solid rgba(255,255,255,.05);
-        backdrop-filter: blur(6px);
-        height: 105px;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 20px;
+        padding: 20px;
+        height: 110px;
         display: flex;
         align-items: center;
         position: relative;
-        color: white;
+        transition: transform 0.3s ease;
     }
 
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        /* Gradient Top Line */
         .dashboard-card::before {
             content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg,#3b82f6,#22c55e,#f59e0b,#ef4444);
-            border-radius: 12px 12px 0 0;
+            height: 3px;
+            border-radius: 20px 20px 0 0;
         }
 
-    .card-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
+    .card-blue::before {
+        background: linear-gradient(90deg, #3b82f6, #60a5fa);
     }
 
-    .dashboard-card h6 {
-        font-weight: 600;
-        color: #ffffff;
+    .card-green::before {
+        background: linear-gradient(90deg, #10b981, #34d399);
     }
 
-    .dashboard-card h3 {
-        font-weight: 700;
-        color: #ffffff;
+    .card-orange::before {
+        background: linear-gradient(90deg, #f59e0b, #fbbf24);
+    }
+
+    .card-red::before {
+        background: linear-gradient(90deg, #ef4444, #f87171);
+    }
+
+    .card-content h6 {
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: #94a3b8;
+        margin-bottom: 5px;
+    }
+
+    .card-content h3 {
+        font-weight: 800;
+        margin: 0;
+        background: linear-gradient(to right, #fff, #cbd5e1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     .card-icon {
-        width: 45px;
-        height: 45px;
-        border-radius: 10px;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
+        font-size: 20px;
     }
 
     .blue {
-        background: rgba(59,130,246,.15);
+        background: rgba(59, 130, 246, 0.1);
         color: #3b82f6;
-        box-shadow: 0 0 15px rgba(59,130,246,.5);
+        box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
     }
 
     .green {
-        background: rgba(34,197,94,.15);
-        color: #22c55e;
-        box-shadow: 0 0 15px rgba(34,197,94,.5);
+        background: rgba(16, 185, 129, 0.1);
+        color: #10b981;
+        box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
     }
 
     .orange {
-        background: rgba(245,158,11,.15);
+        background: rgba(245, 158, 11, 0.1);
         color: #f59e0b;
-        box-shadow: 0 0 15px rgba(245,158,11,.5);
+        box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
     }
 
     .red {
-        background: rgba(239,68,68,.15);
+        background: rgba(239, 68, 68, 0.1);
         color: #ef4444;
-        box-shadow: 0 0 15px rgba(239,68,68,.5);
+        box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
     }
 
+    /* 📋 Main Timetable Card */
     .main-card {
-        background: rgba(17,24,39,.6);
-        border-radius: 12px;
-        border: 1px solid rgba(255,255,255,.05);
-        backdrop-filter: blur(6px);
-        height: 100%;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        padding: 25px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
     }
+
+    /* 🗓️ Modern Table Styling */
+    .table-responsive {
+        border-radius: 16px;
+        overflow: hidden;
+    }
+
+    .table-dark {
+        background: transparent !important;
+        margin: 0;
+    }
+
+        .table-dark th {
+            background: rgba(255, 255, 255, 0.03) !important;
+            color: #3b82f6;
+            font-size: 12px;
+            text-transform: uppercase;
+            padding: 15px;
+            border-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .table-dark td {
+            padding: 15px;
+            border-color: rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+            font-size: 14px;
+        }
 
     .present {
-        background: rgba(34,197,94,.15);
-        color: #22c55e;
+        background: rgba(16, 185, 129, 0.1) !important;
+        color: #34d399;
         font-weight: 600;
     }
 
     .absent {
-        background: rgba(239,68,68,.15);
-        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1) !important;
+        color: #f87171;
         font-weight: 600;
     }
 
     .pending {
-        background: rgba(59,130,246,.15);
-        color: #3b82f6;
+        background: rgba(59, 130, 246, 0.05) !important;
+        color: #94a3b8;
     }
 
     .lunch {
-        background: rgba(245,158,11,.15);
-        color: #f59e0b;
-        font-weight: 600;
+        background: rgba(245, 158, 11, 0.1) !important;
+        color: #fbbf24;
+        font-weight: 700;
+        font-size: 11px;
+        text-transform: uppercase;
     }
 
     .chart-container {
+        position: relative;
         width: 100%;
-        max-width: 300px;
+        max-width: 250px;
         margin: auto;
     }
 </style>
 
-
-<div class="container-fluid mt-3">
-
-    <div class="row mb-3">
-
+<div class="container-fluid mt-4">
+    <div class="row g-4 mb-4">
         <div class="col-md-3">
-            <div class="dashboard-card">
-                <div class="card-content">
-                    <div>
+            <div class="dashboard-card card-blue">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div class="card-content">
                         <h6>Total Subjects</h6>
                         <h3>@ViewBag.TotalSubjects</h3>
                     </div>
@@ -145,164 +197,143 @@
         </div>
 
         <div class="col-md-3">
-            <div class="dashboard-card">
-                <div class="card-content">
+            <div class="dashboard-card card-green">
+                <div class="d-flex justify-content-between align-items-center w-100">
                     <input type="hidden" id="presentVal" value="@ViewBag.Present" />
                     <input type="hidden" id="absentVal" value="@ViewBag.Absent" />
-                    <div>
-                        <h6 style="color:white">Attendance</h6>
+                    <div class="card-content">
+                        <h6>Attendance</h6>
                         <h3 id="percent">0%</h3>
                     </div>
-                    <div class="card-icon green"><i class="bi bi-check-circle"></i></div>
+                    <div class="card-icon green"><i class="bi bi-person-check"></i></div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="dashboard-card">
-                <div class="card-content">
-                    <div>
+            <div class="dashboard-card card-orange">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div class="card-content">
                         <h6>Total Lectures</h6>
                         <h3>@ViewBag.TotalLectures</h3>
                     </div>
-                    <div class="card-icon orange"><i class="bi bi-clock"></i></div>
+                    <div class="card-icon orange"><i class="bi bi-calendar-event"></i></div>
                 </div>
             </div>
         </div>
 
         <div class="col-md-3">
-            <div class="dashboard-card">
-                <div class="card-content">
-                    <div>
+            <div class="dashboard-card card-red">
+                <div class="d-flex justify-content-between align-items-center w-100">
+                    <div class="card-content">
                         <h6>Pending Fees</h6>
                         <a href="/FeePayment/Create"> <h3>₹@ViewBag.PendingFees</h3></a>
                     </div>
-                    <div class="card-icon red"><i class="bi bi-currency-rupee"></i></div>
+                    <div class="card-icon red"><i class="bi bi-wallet2"></i></div>
                 </div>
             </div>
         </div>
-
     </div>
 
+    <div class="row g-4">
+        <div class="col-xl-9">
+            <div class="main-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="m-0 fw-bold"><i class="bi bi-table me-2 text-primary"></i>Weekly Timetable</h5>
+                    <span class="badge bg-primary bg-opacity-10 text-white px-3 py-2 rounded-pill small">Academic Year 2025-26</span>
+                </div>
 
-    <div class="row">
-
-        <div class="col-md-8">
-            <div class="main-card p-3">
-                <h5 class="mb-3" style="color:white">Timetable</h5>
-
-                <table class="table table-dark table-bordered text-center">
-                    <thead>
-                        <tr>
-                            <th>Day</th>
-                            <th>9-10</th>
-                            <th>10-11</th>
-                            <th>11-12</th>
-                            <th>12-1</th>
-                            <th>1-2</th>
-                            <th>2-3</th>
-                            <th>3-4</th>
-                            <th>4-5</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-
-                        @{
-                            int present = 0;
-                            int absent = 0;
-                        }
-
-                        @foreach (var day in new[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" })
-                        {
+                <div class="table-responsive">
+                    <table class="table table-dark table-bordered text-center align-middle">
+                        <thead>
                             <tr>
-                                <td>@day</td>
-
-                                @foreach (var slot in new[] { "9-10", "10-11", "11-12", "12-1", "L", "2-3", "3-4", "4-5" })
-                                {
-                                    if (slot == "L")
+                                <th width="100">Day</th>
+                                <th>09:00</th>
+                                <th>10:00</th>
+                                <th>11:00</th>
+                                <th>12:00</th>
+                                <th width="60">Break</th>
+                                <th>02:00</th>
+                                <th>03:00</th>
+                                <th>04:00</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var day in new[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" })
+                            {
+                                <tr>
+                                    <td class="fw-bold text-white-50">@day.Substring(0, 3)</td>
+                                    @foreach (var slot in new[] { "9-10", "10-11", "11-12", "12-1", "L", "2-3", "3-4", "4-5" })
                                     {
-                                        <td class="lunch">Lunch</td>
-                                    }
-                                    else
-                                    {
-                                        var item = Model.FirstOrDefault(x => x.DayOfWeek == day && x.Slot == slot);
-
-                                        if (item == null)
+                                        if (slot == "L")
                                         {
-                                            <td>-</td>
+                                            <td class="lunch">LUNCH</td>
                                         }
                                         else
                                         {
-                                            string cls = "pending";
-
-                                            if (item.IsPresent == 1) { cls = "present"; present++; }
-                                            else if (item.IsPresent == 0) { cls = "absent"; absent++; }
-
-                                            <td class="@cls">
-                                                @item.SubjectName
-                                                <br />
-                                                <small>@item.Teacher</small>
-                                            </td>
+                                            var item = Model.FirstOrDefault(x => x.DayOfWeek == day && x.Slot == slot);
+                                            if (item == null)
+                                            {
+                                                <td>-</td>
+ }
+                                            else
+                                            {
+                                                string cls = (item.IsPresent == 1) ? "present" : (item.IsPresent == 0 ? "absent" : "pending");
+                                                <td class="@cls">
+                                                    <div class="fw-bold">@item.SubjectName</div>
+                                                    <div class="small text-white-50" style="font-size: 10px;">@item.Teacher</div>
+                                                </td>
+                                            }
                                         }
                                     }
-                                }
-                            </tr>
-                        }
-
-                    </tbody>
-                </table>
-
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
-        <div class="col-md-4">
-            <div class="main-card p-3">
-                <h5 class="mb-3" style="color:white">Attendance</h5>
-
+        <div class="col-xl-3">
+            <div class="main-card text-center">
+                <h5 class="mb-4 fw-bold">Attendance Analysis</h5>
                 <div class="chart-container">
                     <canvas id="pieChart"></canvas>
                 </div>
-
+                <div class="mt-4 d-flex justify-content-around small">
+                    <div><i class="bi bi-circle-fill text-success me-1"></i> Present</div>
+                    <div><i class="bi bi-circle-fill text-danger me-1"></i> Absent</div>
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        var p = parseInt(document.getElementById("presentVal").value) || 0;
+        var a = parseInt(document.getElementById("absentVal").value) || 0;
 
-        var present = parseInt(document.getElementById("presentVal").value) || 0;
-        var absent = parseInt(document.getElementById("absentVal").value) || 0;
-
-        // agar data nahi hai to red circle
-        if (present == 0 && absent == 0) {
-            absent = 1;
-        }
-
-        var total = present + absent;
-
-        document.getElementById("percent").innerText =
-            Math.round((present * 100) / total) + "%";
+        if (p === 0 && a === 0) { a = 1; }
+        var total = p + a;
+        document.getElementById("percent").innerText = Math.round((p * 100) / total) + "%";
 
         new Chart(document.getElementById("pieChart"), {
             type: "doughnut",
             data: {
                 labels: ["Present", "Absent"],
                 datasets: [{
-                    data: [present, absent],
-                    backgroundColor: ["#22c55e", "#ef4444"],
+                    data: [p, a],
+                    backgroundColor: ["#10b981", "#ef4444"],
+                    hoverOffset: 4,
                     borderWidth: 0
                 }]
             },
             options: {
-                cutout: "70%",
-                responsive: true
+                cutout: "75%",
+                responsive: true,
+                plugins: { legend: { display: false } }
             }
         });
-
     });
 </script>
