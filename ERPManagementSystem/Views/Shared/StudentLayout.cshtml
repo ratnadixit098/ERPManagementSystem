@@ -1,202 +1,276 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title</title>
+    <title>@ViewBag.Title - Student Portal</title>
 
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
     <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+
     <style>
-        /* body {
+        :root {
+            --sidebar-width: 260px;
+            --bg-dark: #020617;
+            --card-dark: rgba(15, 23, 42, 0.9);
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+        }
+
+        body {
             margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            background: #f4f6f9;
-        }*/
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(at 0% 0%, rgba(59, 130, 246, 0.05) 0, transparent 50%), radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.05) 0, transparent 50%);
+            color: #f1f5f9;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
 
-        /* Header */
-        @@media (min-width: 1200px) {
-            .container, .container-lg, .container-md, .container-sm, .container-xl {
-                max-width: 1323px !important;
+        /* ✨ Premium Sticky Header */
+        .header {
+            height: 70px;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+            .header h2 {
+                margin: 0;
+                font-size: 20px;
+                font-weight: 700;
+                letter-spacing: -0.5px;
+                background: linear-gradient(to right, #fff, #94a3b8);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
             }
 
-            .container, .container-fluid, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
-                margin-left: inherit !important;
-                --bs-gutter-x: 0rem !important;
+        /* 👤 User Profile Capsule */
+        .user-menu {
+            position: relative;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 8px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+            .user-menu:hover {
+                background: rgba(59, 130, 246, 0.1);
+                border-color: var(--accent-blue);
             }
 
-            .header {
-                height: 60px;
-                background: #404242;
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: #0f172a;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            min-width: 180px;
+            z-index: 1100;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 8px;
+            transform: translateY(10px);
+        }
+
+            .dropdown a {
                 display: flex;
                 align-items: center;
-                justify-content: space-between;
-                padding: 0 20px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                gap: 10px;
+                padding: 10px 15px;
+                text-decoration: none;
+                color: #94a3b8;
+                font-weight: 500;
+                border-radius: 8px;
+                transition: 0.2s;
             }
 
-                .header h2 {
-                    margin: 0;
-                    color: #ffffff;
+                .dropdown a:hover {
+                    background: rgba(239, 68, 68, 0.1);
+                    color: #ef4444;
                 }
 
-            .user-menu {
-                position: relative;
-                cursor: pointer;
-                background: #4a4c4c; /* Slightly lighter than header */
-                color: white;
-                padding: 8px 18px;
-                border-radius: 50px; /* Capsule shape */
-                transition: all 0.3s ease;
-                border: 1px solid rgba(255,255,255,0.1);
+        /* 📟 Main Wrapper */
+        .main-wrapper {
+            display: flex;
+        }
+
+        /* 🚀 Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: calc(100vh - 70px);
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 1));
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 25px 15px;
+            position: fixed;
+            left: 0;
+            overflow-y: auto;
+        }
+
+            .sidebar h3 {
+                font-size: 11px;
+                text-transform: uppercase;
+                letter-spacing: 1.5px;
+                color: var(--accent-blue);
+                font-weight: 700;
+                margin-bottom: 25px;
+                padding-left: 10px;
+            }
+
+            .sidebar a {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px 15px;
+                color: #94a3b8;
+                text-decoration: none;
                 font-size: 14px;
-                display: flex;
-                align-items: center;
-                gap: 8px;
+                font-weight: 500;
+                border-radius: 12px;
+                margin-bottom: 8px;
+                transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             }
 
-                .user-menu:hover {
-                    background: #575959;
-                    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+                .sidebar a i {
+                    width: 20px;
+                    font-size: 16px;
                 }
 
-            /* Dropdown Container */
-            .dropdown {
-                display: none;
-                position: absolute;
-                top: 55px; /* Spaced slightly away from the button */
-                right: 0;
-                background: white;
-                border-radius: 12px; /* Rounded corners */
-                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-                min-width: 160px;
-                z-index: 1000;
-                overflow: hidden;
-                border: 1px solid #eee;
-                /* Animation helper */
-                transform: translateY(10px);
-                transition: opacity 0.3s ease, transform 0.3s ease;
-            }
-
-                /* The actual Logout Link */
-                .dropdown a {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    padding: 12px 20px;
-                    text-decoration: none;
-                    color: #e74c3c; /* Professional Red for Logout */
-                    font-weight: 600;
-                    transition: background 0.2s;
+                .sidebar a:hover {
+                    background: rgba(255, 255, 255, 0.03);
+                    color: #fff;
+                    transform: translateX(5px);
                 }
 
-                    .dropdown a:hover {
-                        background: #fff5f5; /* Light red tint on hover */
-                        color: #c0392b;
-                    }
-
-                    .dropdown a i {
-                        font-size: 16px;
-                    }
-            /* Layout */
-            .container {
-                display: flex;
-            }
-            /* Sidebar */
-            .sidebar {
-                width: 240px;
-                height: calc(100vh - 60px);
-                background: #343333b3;
-                /*background: linear-gradient(311deg, #bb99d5, #6483d5, #d78fe1);*/
-                color: white;
-                padding-top: 20px;
-            }
-
-                .sidebar h3 {
-                    text-align: center;
-                    margin-bottom: 20px;
+                .sidebar a.active {
+                    background: linear-gradient(90deg, rgba(59, 130, 246, 0.1), transparent);
+                    color: var(--accent-blue);
+                    border-left: 3px solid var(--accent-blue);
                 }
 
-                .sidebar a {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                    padding: 12px 20px;
-                    color: white;
-                    text-decoration: none;
-                    font-size: 15px;
-                }
+        /* 🌑 Content Area */
+        .content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            padding: 40px;
+            min-height: calc(100vh - 70px);
+            background: radial-gradient(at 50% 50%, rgba(30, 58, 138, 0.02) 0, transparent 80%);
+        }
 
-                    .sidebar a:hover {
-                        background: #cbcfcf;
-                        color: black;
-                    }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
 
-                    .sidebar a.active {
-                        background: #34495e;
-                    }
-            /* Content */
-            .content {
-                flex: 1;
-                padding: 30px;
-            }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 10px;
+        }
     </style>
 </head>
 
 <body>
 
     <div class="header">
-        <h2>Welcome to the Student Panel</h2>
+        <h2><i class="fa fa-graduation-cap text-primary me-2"></i> Student Portal</h2>
 
         <div class="user-menu" id="userMenu">
-            <i class="fa fa-user-circle"></i>
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">
+                @Session["UserName"].ToString().Substring(0, 1).ToUpper()
+            </div>
             <span>@Session["UserName"]</span>
-            <i class="fa fa-caret-down"></i>
+            <i class="fa fa-chevron-down small text-muted"></i>
 
             <div class="dropdown" id="dropdown">
                 <a href="/Login/Logout">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    <i class="fas fa-power-off"></i> Logout
                 </a>
             </div>
         </div>
     </div>
 
-    <div class="container">
-
-        <!-- Sidebar -->
+    <div class="main-wrapper">
 
         <div class="sidebar">
-            <h3><i class="fa fa-dashboard"></i> My Dashboard</h3>
-            <hr />
-            <a href="/StudentDashboard/StudentDashboard"><i class="fa fa-home"></i> Dashboard</a>
-            <a href="/FeePayment/Create"><i class="fa fa-user"></i>Pay Fees</a>
-           
+            <h3>Student Menu</h3>
+
+            <a href="/StudentDashboard/StudentDashboard" id="nav-dash">
+                <i class="fa fa-th-large"></i> Dashboard
+            </a>
+
+            <a href="/FeePayment/Create" id="nav-fees">
+                <i class="fa fa-credit-card"></i> Pay Fees Online
+            </a>
+
+            <a href="#">
+                <i class="fa fa-book-reader"></i> Course Materials
+            </a>
+
+            <a href="#">
+                <i class="fa fa-calendar-check"></i> Attendance Report
+            </a>
+
+            <a href="#">
+                <i class="fa fa-file-alt"></i> Examination
+            </a>
+
+            <div style="margin-top: 50px; padding: 20px; background: rgba(59, 130, 246, 0.03); border-radius: 16px; border: 1px solid rgba(59, 130, 246, 0.1);">
+                <p class="small text-muted mb-2">Academic Support</p>
+                <a href="#" style="padding:0; font-size: 12px; color: var(--accent-blue); background:transparent;">View Notice Board</a>
+            </div>
         </div>
 
-        <!-- 🔥 YAHI IMPORTANT PART -->
         <div class="content">
             @RenderBody()
         </div>
 
     </div>
 
+
+
+
     <script>
         $(document).ready(function () {
-            // Toggle the menu
+            // Dropdown Toggle
             $('#userMenu').on('click', function (e) {
-                e.stopPropagation(); // Prevents immediate closing
-                $('#dropdown').fadeToggle(200).css('display', 'block');
+                e.stopPropagation();
+                $('#dropdown').fadeToggle(150);
             });
 
-            // Close the menu if the user clicks anywhere else on the page
             $(document).on('click', function () {
-                $('#dropdown').fadeOut(200);
+                $('#dropdown').fadeOut(150);
+            });
+
+            // Auto-highlight Active Link
+            var currentPath = window.location.pathname;
+            $('.sidebar a').each(function () {
+                if ($(this).attr('href') === currentPath) {
+                    $('.sidebar a').removeClass('active');
+                    $(this).addClass('active');
+                }
             });
         });
     </script>
 
 </body>
 </html>
-

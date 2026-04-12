@@ -10,6 +10,7 @@ using System.Collections.Generic;
 
 namespace ERPManagementSystem.Controllers
 {
+    [CheckSession]
     public class FeePaymentController : Controller
     {
         string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;

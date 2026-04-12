@@ -33,5 +33,7 @@ namespace ERPManagementSystem.Models
         public string Teacher_Name { get; set; }
         public string Stundent_Name { get; set; }
         public int? CollegeId { get; set; }
+        public string CollageName { get; set; }
+
     }
 }

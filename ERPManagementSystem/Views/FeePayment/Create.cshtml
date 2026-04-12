@@ -1,37 +1,71 @@
 ﻿@model ERPManagementSystem.Models.FeePayment
-
+@{
+    Layout = "~/Views/Shared/StudentLayout.cshtml";
+}
 <script src="~/Scripts/jquery-3.7.0.min.js"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-<h3>Student Fee Payment</h3>
+<script>
+    $(document).ready(function () {
+        $('#CollegeId').val('@Session["CollageName"]')
+        $('#CollegeId').attr('disabled', true);
+        $('#DepartmentId').val('@Session["DepartmentName"]')
+        $('#DepartmentId').attr('disabled', true);
+        $('#CourseId').val('@Session["CourseName"]')
+        $('#CourseId').attr('disabled', true);
+        $('#ClassId').val('@Session["Section"]')
+        $('#ClassId').attr('disabled', true);
+        $('#StudentId').val('@Session["Stundent_Name"]')
+        $('#StudentId').attr('disabled', true);
+        GetStudentFeeDetails();
+    })
 
+    function GetStudentFeeDetails() {
+            $.get("/FeePayment/GetFeeDetails",
+                { studentId:'@Session["StudentId"]' },
+                function (data) {
+
+                    $("#FeeType").val(data.FeeType);
+                    $("#TotalFee").val(data.TotalFee);
+                    $("#PaidAmount").val(data.PaidAmount);
+                    $("#RemainingAmount").val(data.Remaining);
+
+                    if (parseFloat(data.Remaining) > 0)
+                        $("#payBtn").prop("disabled", false);
+                    else
+                        $("#payBtn").prop("disabled", true);
+                });
+    }
+</script>
+<h3>Student Fee Payment</h3>
 <div class="row">
 
     <div class="col-md-6">
 
         <label>College</label>
-        @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "-Select-", new { @class = "form-control", id = "CollegeId" })
+        @*@Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "-Select-", new { @class = "form-control", id = "CollegeId" })*@
+        @Html.TextBoxFor(model => model.CollageId, new { @class = "form-control", @id = "CollegeId" })
 
         <label>Department</label>
-        <select id="DepartmentId" class="form-control">
-            <option>-Select-</option>
-        </select>
-
+        @*<select id="DepartmentId" class="form-control">
+                <option>-Select-</option>
+            </select>*@
+        @Html.TextBoxFor(model => model.DepartmentId, new { @class = "form-control", @id = "DepartmentId" })
         <label>Course</label>
-        <select id="CourseId" class="form-control">
-            <option>-Select-</option>
-        </select>
-
+        @*<select id="CourseId" class="form-control">
+                <option>-Select-</option>
+            </select>*@
+        @Html.TextBoxFor(model => model.CourseId, new { @class = "form-control", @id = "CourseId" })
         <label>Class</label>
-        <select id="ClassId" class="form-control">
-            <option>-Select-</option>
-        </select>
-
+        @*<select id="ClassId" class="form-control">
+                <option>-Select-</option>
+            </select>*@
+        @Html.TextBoxFor(model => model.ClassId, new { @class = "form-control", @id = "ClassId" })
         <label>Student</label>
-        <select id="StudentId" class="form-control">
-            <option>-Select-</option>
-        </select>
-
+        @*<select id="StudentId" class="form-control">
+                <option>-Select-</option>
+            </select>*@
+        @Html.TextBoxFor(model => model.StudentId, new { @class = "form-control", @id = "StudentId" })
     </div>
 
     <div class="col-md-6">
@@ -131,7 +165,7 @@
         e.preventDefault();
 
         var amount = $("#PayAmount").val();
-        var studentId = $("#StudentId").val();
+        var studentId = '@Session["StudentId"]';
 
         $.get("/FeePayment/CreateOrder", { amount: amount }, function (orderId) {
 
