@@ -47,7 +47,7 @@ public class TimetableController : Controller
 
     public void BindClass()
     {
-        SqlDataAdapter da = new SqlDataAdapter("select ClassId,Section from Class", conStr);
+        SqlDataAdapter da = new SqlDataAdapter("select ClassId,class_Name= CourseName+' '+DepartmentName+' Sem- ' +convert(varchar,Semester)+' '+Section from Class\r\nleft join Course on Course.CourseId=Class.CourseId\r\nleft join Department on Department.DepartmentId=Course.DepartmentId", conStr);
         DataTable dt = new DataTable();
         da.Fill(dt);
 
@@ -58,7 +58,7 @@ public class TimetableController : Controller
             list.Add(new SelectListItem
             {
                 Value = row["ClassId"].ToString(),
-                Text = row["Section"].ToString()
+                Text = row["class_Name"].ToString()
             });
         }
 
