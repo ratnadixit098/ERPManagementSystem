@@ -1,5 +1,7 @@
 ﻿@model IEnumerable<ERPManagementSystem.Models.Timetable>
-
+@{
+    Layout = "~/Views/Shared/TeacherLayout.cshtml";
+}
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
 <style>
@@ -125,7 +127,7 @@
                     <td>@row.DepartmentName</td>
                     <td>@row.Semester</td>
                     <td>@row.Section</td>
-                    <td>@row.Teacher</td>
+                    <td>@row.TeacherName</td>
                     <td>@row.SubjectName</td>
                     <td>@row.StartTime - @row.EndTime</td>
 

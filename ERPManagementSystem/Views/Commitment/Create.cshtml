@@ -1,7 +1,7 @@
 ﻿@model ERPManagementSystem.Models.FeesCommitment
 
 @{
-    Layout = "~/Views/Shared/Principal.cshtml";
+    Layout = "~/Views/Shared/TeacherLayout.cshtml";
 }
 <script src="~/Scripts/jquery-3.7.0.min.js"></script>
 
@@ -37,8 +37,8 @@
 
         <div class="col-md-6">
 
-            <label>Semester</label>
-            @Html.TextBoxFor(m => m.Semester, new { @class = "form-control" })
+            @*<label>Semester</label>
+            @Html.TextBoxFor(m => m.Semester, new { @class = "form-control" })*@
 
             <label>Total Fees</label>
             @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control" })
