@@ -150,6 +150,7 @@
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\PrincipalDashboardController.cs" />
     <Compile Include="Controllers\ReminderController.cs" />
+    <Compile Include="Controllers\StudentAcademicController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\StudentDashboardController.cs" />
     <Compile Include="Controllers\SubjectController.cs" />
@@ -175,6 +176,7 @@
     <Compile Include="Models\PrincipalDashboard.cs" />
     <Compile Include="Models\ReminderService.cs" />
     <Compile Include="Models\Student.cs" />
+    <Compile Include="Models\StudentAcademic.cs" />
     <Compile Include="Models\Subject.cs" />
     <Compile Include="Models\Teacher.cs" />
     <Compile Include="Models\TeacherDashboard.cs" />
@@ -410,6 +412,7 @@
     <Content Include="Views\TeacherDashboard\TeacherDashboard.cshtml" />
     <Content Include="Views\Shared\Principal.cshtml" />
     <Content Include="Views\PrincipalDashboard\PrincipalDashboard.cshtml" />
+    <Content Include="Views\StudentAcademic\EditStudentAcademic.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Shared\AdminLayout.cshtml" />
