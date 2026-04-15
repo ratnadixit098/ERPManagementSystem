@@ -7,6 +7,7 @@ using ERPManagementSystem.Models;
 
 namespace ERPManagementSystem.Controllers
 {
+    [CheckSession]
     public class StudentDashboardController : Controller
     {
         string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
@@ -62,24 +63,29 @@ namespace ERPManagementSystem.Controllers
 
                 // total subjects
                 SqlCommand cmd2 = new SqlCommand(
-                    "select count(distinct SubjectId) from TimeTable", con);
+                    "select count(*) from TimeTable  where ClassId=@ClassId", con);
+                cmd2.Parameters.AddWithValue("@ClassId", Session["ClassId"]);
+
                 ViewBag.TotalSubjects = cmd2.ExecuteScalar();
 
                 // total lectures
                 SqlCommand cmd3 = new SqlCommand(
-                    "select count(*) from TimeTable", con);
+                    "select count(*) from TimeTable  where ClassId=@ClassId", con);
+                cmd3.Parameters.AddWithValue("@ClassId", Session["ClassId"]);
+
                 ViewBag.TotalLectures = cmd3.ExecuteScalar();
 
                 // pending fees
                 SqlCommand cmd4 = new SqlCommand(
-                    "select isnull(sum(PendingAmount),0) from Fees where StudentId=@studentId", con);
+                    "select Remaining = fc.TotalFees - isnull(sum(fp.PayAmount),0) from FeeCommitment fc left join FeePayment fp on fc.StudentId = fp.StudentId where fc.StudentId=@studentId group by fc.FeeType,fc.TotalFees", con);
                 cmd4.Parameters.AddWithValue("@studentId", studentId);
                 ViewBag.PendingFees = cmd4.ExecuteScalar();
 
 
                 // ✅ SEMESTER ATTENDANCE FOR PIE CHART
                 SqlCommand cmd5 = new SqlCommand(@"
-                select 
+               
+               select 
                 SUM(case when IsPresent = 1 then 1 else 0 end) as PresentCount,
                 SUM(case when IsPresent = 0 then 1 else 0 end) as AbsentCount
                 from Attendance

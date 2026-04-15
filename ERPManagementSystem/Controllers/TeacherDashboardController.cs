@@ -7,13 +7,14 @@ using ERPManagementSystem.Models;
 
 namespace ERPManagementSystem.Controllers
 {
+    [CheckSession]
     public class TeacherDashboardController : Controller
     {
         string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
 
         public ActionResult TeacherDashboard()
         {
-            int teacherId = 1;
+            int teacherId = Convert.ToInt32(Session["TeacherId"]); ;
 
             List<TeacherDashboard> list = new List<TeacherDashboard>();
 

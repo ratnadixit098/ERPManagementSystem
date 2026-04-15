@@ -13,6 +13,7 @@ public class AttendanceController : Controller
 
 
     // Timetable
+    [CheckSession]
     public ActionResult TimeTable()
     {
         List<Timetable> list = new List<Timetable>();
