@@ -259,11 +259,26 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @*@foreach (var x in Model)
+                            {
+                                <tr>
+                                    <th>@x.DayOfWeek | @x.Slot</th>
+                                </tr>
+                            }*@
                             @foreach (var day in new[] { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday" })
                             {
                                 <tr>
                                     <td class="fw-bold text-white-50">@day.Substring(0, 3)</td>
-                                    @foreach (var slot in new[] { "9-10", "10-11", "11-12", "12-1", "L", "2-3", "3-4", "4-5" })
+                                    @foreach (var slot in new[] {
+"09:00 AM - 10:00 AM",
+"10:00 AM - 11:00 AM",
+"11:00 AM - 12:00 PM",
+"12:00 PM - 01:00 PM",
+"L",
+"02:00 PM - 03:00 PM",
+"03:00 PM - 04:00 PM",
+"04:00 PM - 05:00 PM"
+})
                                     {
                                         if (slot == "L")
                                         {
@@ -275,7 +290,7 @@
                                             if (item == null)
                                             {
                                                 <td>-</td>
- }
+                                            }
                                             else
                                             {
                                                 string cls = (item.IsPresent == 1) ? "present" : (item.IsPresent == 0 ? "absent" : "pending");
