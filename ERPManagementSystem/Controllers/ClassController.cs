@@ -9,7 +9,7 @@ public class ClassController : Controller
 {
     string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
 
-
+    [CheckSession]
     public ActionResult Create()
     {
         BindCourse();

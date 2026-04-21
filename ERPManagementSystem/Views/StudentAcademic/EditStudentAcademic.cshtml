@@ -1,0 +1,267 @@
+﻿@model List<ERPManagementSystem.Models.StudentAcademic>
+@{
+    Layout = "~/Views/Shared/Principal.cshtml";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+
+@if (TempData["Success"] != null)
+{
+    <script>
+alert('@TempData["Success"]');
+    </script>
+}
+
+<h3>Student Academic</h3>
+
+<form method="get">
+    <div class="row mb-3">
+
+        <div class="col-md-3">
+            <label>Course</label>
+            <select id="CourseId" name="CourseId" class="form-control">
+                <option value="">Select Course</option>
+                @foreach (System.Data.DataRow dr in ViewBag.Course.Rows)
+                {
+                    <option value="@dr["CourseId"]"
+                            data-duration="@dr["DurationYears"]"
+                            @(Request["CourseId"] == dr["CourseId"].ToString() ? "selected" : "")>
+                        @dr["CourseName"]
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label>Department</label>
+            <select name="DepartmentId" class="form-control">
+                <option value="">Select Department</option>
+                @foreach (System.Data.DataRow dr in ViewBag.Department.Rows)
+                {
+                    <option value="@dr["DepartmentId"]"
+                            @(Request["DepartmentId"] == dr["DepartmentId"].ToString() ? "selected" : "")>
+                        @dr["DepartmentName"]
+                    </option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label>Year</label>
+            <select id="YearOfStudent" name="YearOfStudent" class="form-control">
+                <option value="">Select Year</option>
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <label>Semester</label>
+            <select name="Semester" class="form-control">
+                <option value="">Select Semester</option>
+                <option value="1" @(Request["Semester"] == "1" ? "selected" : "")>1</option>
+                <option value="2" @(Request["Semester"] == "2" ? "selected" : "")>2</option>
+                <option value="3" @(Request["Semester"] == "3" ? "selected" : "")>3</option>
+                <option value="4" @(Request["Semester"] == "4" ? "selected" : "")>4</option>
+                <option value="5" @(Request["Semester"] == "5" ? "selected" : "")>5</option>
+                <option value="6" @(Request["Semester"] == "6" ? "selected" : "")>6</option>
+                <option value="7" @(Request["Semester"] == "7" ? "selected" : "")>7</option>
+                <option value="8" @(Request["Semester"] == "8" ? "selected" : "")>8</option>
+            </select>
+        </div>
+
+        <div class="col-md-2 mt-4">
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+
+    </div>
+</form>
+
+<table class="table table-bordered">
+    <tr>
+        <th>Name</th>
+        <th>Enrollment</th>
+        <th>Course</th>
+        <th>Department</th>
+        <th>Action</th>
+    </tr>
+
+    @if (Model != null)
+    {
+        foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.StudentName</td>
+                <td>@item.EnrollmentNo</td>
+                <td>@item.CourseName</td>
+                <td>@item.DepartmentName</td>
+                <td>
+                    <button type="button" class="btn btn-primary"
+                            onclick="openModal_('@item.StudentId',
+'@item.DepartmentId',
+'@item.StudentName',
+'@item.EnrollmentNo',
+'@item.CourseName',
+'@item.DepartmentName',
+'@item.Duration',
+'@item.AdmissionYear',
+'@item.YearOfStudent',
+'@item.Semester')">
+                        Edit Academic
+                    </button>
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+<!-- MODAL -->
+<div class="modal fade" id="academicModal_" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <form method="post" action="/StudentAcademic/Save">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Student Academic</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" name="StudentId" id="StudentId" />
+                    <input type="hidden" name="DepartmentId" id="DepartmentId" />
+
+                    <label>Name</label>
+                    <input type="text" id="StudentName" class="form-control" readonly />
+
+                    <label>Enrollment</label>
+                    <input type="text" id="Enrollment" class="form-control" readonly />
+
+                    <label>Course</label>
+                    <input type="text" id="Course" class="form-control" readonly />
+
+                    <label>Department</label>
+                    <input type="text" id="Department" class="form-control" readonly />
+
+                    <label>Year</label>
+                    <select id="YearOfStudentModal" name="YearOfStudent" class="form-control"></select>
+
+                    <label>Semester</label>
+                    <select id="SemesterModal" name="Semester" class="form-control">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                    </select>
+
+                    <label>Academic Year</label>
+                    <input type="text" name="AcademicYear" id="AcademicYear" class="form-control" readonly />
+
+                    <label>Batch Year</label>
+                    <input type="text" name="BatchYear" id="BatchYear" class="form-control" readonly />
+
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+$(document).ready(function () {
+
+var duration = $("#CourseId option:selected").data("duration");
+var selectedYear = '@Request["YearOfStudent"]';
+
+if (duration != undefined) {
+
+var year = $("#YearOfStudent");
+year.empty();
+year.append('<option value="">Select Year</option>');
+
+for (var i = 1; i <= duration; i++) {
+
+if (selectedYear == i)
+year.append('<option selected value="' + i + '">' + i + ' Year</option>');
+else
+year.append('<option value="' + i + '">' + i + ' Year</option>');
+}
+}
+
+});
+
+$("#CourseId").change(function () {
+
+var duration = $("#CourseId option:selected").data("duration");
+
+var year = $("#YearOfStudent");
+year.empty();
+year.append('<option value="">Select Year</option>');
+
+for (var i = 1; i <= duration; i++) {
+year.append('<option value="' + i + '">' + i + ' Year</option>');
+}
+
+});
+
+var modal;
+
+function openModal_(id, deptId, name, enroll, course, dept, duration, admissionYear, lastYear, lastSem) {
+
+duration = parseInt(duration);
+admissionYear = parseInt(admissionYear);
+
+$("#StudentId").val(id);
+$("#DepartmentId").val(deptId);
+$("#StudentName").val(name);
+$("#Enrollment").val(enroll);
+$("#Course").val(course);
+$("#Department").val(dept);
+
+var yearDropdown = $("#YearOfStudentModal");
+yearDropdown.empty();
+
+for (let i = 1; i <= duration; i++) {
+yearDropdown.append(`<option value="${i}">${i} Year</option>`);
+}
+
+$("#YearOfStudentModal").val(lastYear);
+$("#SemesterModal").val(lastSem);
+
+calculateAcademic(admissionYear, duration);
+
+$("#YearOfStudentModal").off("change").on("change", function () {
+calculateAcademic(admissionYear, duration);
+});
+
+modal = new bootstrap.Modal(document.getElementById('academicModal_'));
+modal.show();
+}
+
+function calculateAcademic(admissionYear, duration) {
+
+var year = parseInt($("#YearOfStudentModal").val());
+
+var start = admissionYear + (year - 1);
+var end = start + 1;
+
+$("#AcademicYear").val(start + "-" + String(end).slice(-2));
+
+var batchEnd = admissionYear + duration;
+$("#BatchYear").val(admissionYear + "-" + String(batchEnd).slice(-2));
+}
+
+</script>
