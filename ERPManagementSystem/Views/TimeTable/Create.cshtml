@@ -95,13 +95,14 @@
 
                     <div class="col-sm-6">
                         <label>Start Time</label>
-                        @Html.TextBoxFor(x => x.StartTime,
-                        new { @class = "form-control", type = "time", required = "required" })
+                        @Html.TextBoxFor(x => x.StartTime, "{0:hh:mm tt}",
+                        new { @class = "form-control", type = "time" })
+
                     </div>
 
                     <div class="col-sm-6">
                         <label>End Time</label>
-                        @Html.TextBoxFor(x => x.EndTime,
+                        @Html.TextBoxFor(x => x.EndTime, "{0:hh:mm tt}",
                         new { @class = "form-control", type = "time", required = "required" })
                     </div>
 
@@ -117,3 +118,18 @@
         </div>
     </div>
 </div>
+<script>document.getElementById("timeInput").addEventListener("change", function () {
+
+        let time = this.value; // 13:00
+        if (!time) return;
+
+        let [hours, minutes] = time.split(':');
+
+        let ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12 || 12;
+
+        let formattedTime = hours + ":" + minutes + " " + ampm;
+
+        document.getElementById("ampmTime").value = formattedTime;
+});
+    </script>

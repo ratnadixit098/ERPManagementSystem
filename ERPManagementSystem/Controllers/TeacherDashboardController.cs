@@ -22,28 +22,45 @@ namespace ERPManagementSystem.Controllers
             {
                 con.Open();
 
+                //                SqlCommand cmd = new SqlCommand(@"
+                //                select 
+                //               distinct t.DayOfWeek,
+                //                t.StartTime,
+                //                t.EndTime,
+                //                s.SubjectName,
+                //ClassName=CourseName+' '+DepartmentName+' '+Section,
+                //                ClassName=Section,
+                //                case when a.AttendanceId is null then 0 else 1 end as IsTaken
+                //                from TimeTable t
+                //                left join Subject s on s.SubjectId=t.SubjectId
+                //                left join Class c on c.ClassId=t.ClassId
+                //left join Course co on co.CourseId=s.CourseId
+                //left join Department dep on dep.DepartmentId=co.DepartmentId
+                //                left join Attendance a 
+                //                    on a.SubjectId=t.SubjectId 
+                //                    and a.ClassId=t.ClassId
+                //                    and cast(a.AttendanceDate as date)=cast(getdate() as date)
+                //                where t.TeacherId=@teacherId
+                //                and t.DayOfWeek = DATENAME(WEEKDAY, GETDATE())
+                //                ", con);
                 SqlCommand cmd = new SqlCommand(@"
-                select 
-               distinct t.DayOfWeek,
-                t.StartTime,
-                t.EndTime,
-                s.SubjectName,
-ClassName=CourseName+' '+DepartmentName+' '+Section,
-                ClassName=Section,
-                case when a.AttendanceId is null then 0 else 1 end as IsTaken
-                from TimeTable t
-                left join Subject s on s.SubjectId=t.SubjectId
-                left join Class c on c.ClassId=t.ClassId
-left join Course co on co.CourseId=s.CourseId
-left join Department dep on dep.DepartmentId=co.DepartmentId
-                left join Attendance a 
-                    on a.SubjectId=t.SubjectId 
-                    and a.ClassId=t.ClassId
-                    and cast(a.AttendanceDate as date)=cast(getdate() as date)
-                where t.TeacherId=@teacherId
-                and t.DayOfWeek = DATENAME(WEEKDAY, GETDATE())
+                select t.*, c.Semester, c.Section,
+        s.SubjectName, co.CourseName, d.DepartmentName,teacher_Name=FirstName+' '+LastName,ClassName=CourseName+' '+DepartmentName+' '+Section,
+        case when exists(
+            select 1 from Attendance a
+            where a.ClassId = t.ClassId
+            and a.SubjectId = t.SubjectId
+            and cast(a.AttendanceDate as date)=cast(getdate() as date)
+        ) then 1 else 0 end as IsTaken
+        from TimeTable t
+        inner join Class c on c.ClassId=t.ClassId
+        inner join Subject s on s.SubjectId=t.SubjectId
+        inner join Course co on co.CourseId=c.CourseId
+        inner join Department d on d.DepartmentId=co.DepartmentId
+		inner join teacher on teacher.TeacherId= t.TeacherId and t.TeacherId=1
+		and datename(WEEKDAY,getdate())=t.DayOfWeek
+		--and datename(WEEKDAY,dateadd(day,1,getdate()))=t.DayOfWeek
                 ", con);
-
                 cmd.Parameters.AddWithValue("@teacherId", teacherId);
 
                 SqlDataReader dr = cmd.ExecuteReader();

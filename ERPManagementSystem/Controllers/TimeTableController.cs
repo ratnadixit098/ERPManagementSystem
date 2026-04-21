@@ -4,6 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Web.Mvc;
 using System.Collections.Generic;
+using System;
 
 public class TimetableController : Controller
 {
@@ -28,14 +29,20 @@ public class TimetableController : Controller
 
         using (SqlConnection con = new SqlConnection(conStr))
         {
+            var start = DateTime.Today.Add(model.StartTime).ToString("hh:mm tt");
+            var end = DateTime.Today.Add(model.EndTime).ToString("hh:mm tt");
+
+            
             SqlCommand cmd = new SqlCommand("insert into Timetable(ClassId,SubjectId,TeacherId,DayOfWeek,StartTime,EndTime) values(@Class,@Subject,@Teacher,@Day,@Start,@End)", con);
 
             cmd.Parameters.AddWithValue("@Class", model.ClassId);
             cmd.Parameters.AddWithValue("@Subject", model.SubjectId);
             cmd.Parameters.AddWithValue("@Teacher", model.TeacherId);
             cmd.Parameters.AddWithValue("@Day", model.DayOfWeek);
-            cmd.Parameters.AddWithValue("@Start", model.StartTime);
-            cmd.Parameters.AddWithValue("@End", model.EndTime);
+            //cmd.Parameters.AddWithValue("@Start", model.StartTime.ToString("hh:mm tt"));
+            //cmd.Parameters.AddWithValue("@End", model.EndTime.ToString("hh:mm tt"));
+            cmd.Parameters.AddWithValue("@Start", start);
+            cmd.Parameters.AddWithValue("@End", end);
 
             con.Open();
             cmd.ExecuteNonQuery();

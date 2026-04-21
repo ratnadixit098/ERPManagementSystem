@@ -13,7 +13,7 @@ namespace ERPManagementSystem.Controllers
         string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
         public ActionResult StudentDashboard()
         {
-            int studentId =Convert.ToInt32(Session["StudentId"]);
+            int studentId = Convert.ToInt32(Session["StudentId"]);
 
             List<Timetable> list = new List<Timetable>();
 
@@ -46,15 +46,30 @@ namespace ERPManagementSystem.Controllers
 
                 while (dr.Read())
                 {
-                    TimeSpan start = (TimeSpan)dr["StartTime"];
-                    TimeSpan end = (TimeSpan)dr["EndTime"];
+                    //TimeSpan start = (TimeSpan)dr["StartTime"];
+                    //TimeSpan end = (TimeSpan)dr["EndTime"];
 
+                    DateTime start = DateTime.ParseExact(dr["StartTime"].ToString(), "hh:mm tt", null);
+                    DateTime end = DateTime.ParseExact(dr["EndTime"].ToString(), "hh:mm tt", null);
+
+                    //list.Add(new Timetable
+                    //{
+                    //    DayOfWeek = dr["DayOfWeek"].ToString(),
+                    //    SubjectName = dr["SubjectName"].ToString(),
+                    //    Teacher = dr["TeacherName"].ToString(),
+                    //    Slot = start.Hours + "-" + end.Hours,
+                    //    IsPresent = dr["IsPresent"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IsPresent"])
+                    //});
                     list.Add(new Timetable
                     {
                         DayOfWeek = dr["DayOfWeek"].ToString(),
                         SubjectName = dr["SubjectName"].ToString(),
                         Teacher = dr["TeacherName"].ToString(),
-                        Slot = start.Hours + "-" + end.Hours,
+
+                        Slot = Convert.ToDateTime(dr["StartTime"]).ToString("hh:mm tt")
+         + " - " +
+           Convert.ToDateTime(dr["EndTime"]).ToString("hh:mm tt"),
+
                         IsPresent = dr["IsPresent"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IsPresent"])
                     });
                 }

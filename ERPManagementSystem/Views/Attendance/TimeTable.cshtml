@@ -1,6 +1,14 @@
 ﻿@model IEnumerable<ERPManagementSystem.Models.Timetable>
 @{
-    Layout = "~/Views/Shared/TeacherLayout.cshtml";
+    if (Session["Role"].ToString() == "Teacher")
+    {
+        Layout = "~/Views/Shared/TeacherLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/Principal.cshtml";
+    }
+
 }
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
