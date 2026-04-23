@@ -1,222 +1,257 @@
 ﻿@model ERPManagementSystem.Models.PrincipalDashboard
 @{
-  //  Layout = "~/Views/Shared/PrincipalLayout.cshtml";
+     Layout = "~/Views/Shared/Principal.cshtml";
 }
-
+@*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />*@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <style>
     body {
-        background: #0b0f19;
+        background: #0f172a;
         color: #fff;
+        font-family: 'Segoe UI', sans-serif;
     }
 
     .card-box {
-        cursor: pointer;
-        background: rgba(17,24,39,.7);
+        background: #1e293b;
+        border: 1px solid #334155;
         border-radius: 12px;
-        padding: 20px;
-        transition: .3s;
-        border: 1px solid rgba(255,255,255,.05);
+        padding: 25px;
+        transition: 0.3s ease;
+        cursor: pointer;
     }
 
         .card-box:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 0 15px rgba(59,130,246,.4);
+            transform: translateY(-5px);
+            border-color: #3b82f6;
         }
 
     .title {
-        background: linear-gradient(90deg,#60a5fa,#34d399,#fbbf24,#f87171);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: #94a3b8;
+        font-size: 13px;
+        text-transform: uppercase;
+        font-weight: 600;
     }
 
     .count {
-        font-size: 26px;
-        font-weight: 700;
-        text-shadow: 0 0 8px rgba(59,130,246,.7);
+        font-size: 34px;
+        font-weight: 800;
+        margin-top: 5px;
+    }
+
+    .report-section {
+        display: none;
+        background: #111827;
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 20px;
+        border: 1px solid #1e293b;
     }
 
     .chart-card {
-        background: rgba(17,24,39,.7);
-        border-radius: 12px;
-        padding: 15px;
-        height: 420px;
-    }
-
-    .chart-container {
-        height: 320px;
-    }
-
-    .report-box {
-        display: none;
         background: #111827;
-        border-radius: 10px;
-        padding: 15px;
-        margin-top: 15px;
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid #1e293b;
+        height: 400px;
+        position: relative;
     }
 
-    .close-btn {
-        float: right;
-        cursor: pointer;
-        color: #f87171;
-        font-weight: bold;
+    /* DataTables Custom Styling for Dark Theme */
+    .dataTables_wrapper {
+        color: #fff;
+    }
+
+    .dataTables_length select, .dataTables_filter input {
+        background-color: #1e293b !important;
+        color: white !important;
+        border: 1px solid #334155 !important;
+    }
+
+    .page-link {
+        background-color: #1e293b !important;
+        border-color: #334155 !important;
+        color: #fff !important;
+    }
+
+    .active > .page-link {
+        background-color: #3b82f6 !important;
+        border-color: #3b82f6 !important;
     }
 </style>
 
-<div class="container-fluid mt-4">
+<div class="container-fluid py-4">
+    <div class="row g-4 text-center">
+        <div class="col-md-3" onclick="loadReport('dept')">
+            <div class="card-box">
+                <div class="title">Total Departments</div>
+                <div class="count text-primary">@Model.TotalDepartments</div>
+            </div>
+        </div>
+        <div class="col-md-3" onclick="loadReport('course')">
+            <div class="card-box">
+                <div class="title">Total Courses</div>
+                <div class="count text-success">@Model.TotalCourses</div>
+            </div>
+        </div>
+        <div class="col-md-3" onclick="loadReport('teacher')">
+            <div class="card-box">
+                <div class="title">Total Teachers</div>
+                <div class="count text-info">@Model.TotalTeachers</div>
+            </div>
+        </div>
+        <div class="col-md-3" onclick="loadReport('student')">
+            <div class="card-box">
+                <div class="title">Total Students</div>
+                <div class="count text-warning">@Model.TotalStudents</div>
+            </div>
+        </div>
+    </div>
 
-    <div class="row g-3">
+    <div id="reportContainer" class="report-section shadow">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 id="reportTitle" class="m-0">Report</h4>
+            <button class="btn btn-sm btn-danger" onclick="$('#reportContainer').slideUp()">Close</button>
+        </div>
 
-        <div class="col-md-3">
-            <div class="card-box" onclick="toggleReport('deptReport')">
-                <div class="title">Departments</div>
-                <div class="count">@Model.TotalDepartments</div>
+        <div class="row mb-3">
+            <div class="col-md-4" id="deptFilterGroup" style="display:none;">
+                <label class="small text-muted mb-1">Department</label>
+                <select id="ddlDept" class="form-select bg-dark text-white border-secondary" onchange="onDeptChange()">
+                    <option value="">All Departments</option>
+                </select>
+            </div>
+            <div class="col-md-4" id="courseFilterGroup" style="display:none;">
+                <label class="small text-muted mb-1">Course</label>
+                <select id="ddlCourse" class="form-select bg-dark text-white border-secondary" onchange="onCourseChange()">
+                    <option value="">All Courses</option>
+                </select>
             </div>
         </div>
 
-        <div class="col-md-3">
-            <div class="card-box" onclick="toggleReport('courseReport')">
-                <div class="title">Courses</div>
-                <div class="count">@Model.TotalCourses</div>
-            </div>
+        <div class="table-responsive">
+            <table class="table table-dark table-hover" id="reportTable" style="width:100%">
+                <thead class="table-primary"><tr id="tableHeader"></tr></thead>
+                <tbody id="tableBody"></tbody>
+            </table>
         </div>
-
-        <div class="col-md-3">
-            <div class="card-box" onclick="toggleReport('teacherReport')">
-                <div class="title">Teachers</div>
-                <div class="count">@Model.TotalTeachers</div>
-            </div>
-        </div>
-
-        <div class="col-md-3">
-            <div class="card-box" onclick="toggleReport('studentReport')">
-                <div class="title">Students</div>
-                <div class="count">@Model.TotalStudents</div>
-            </div>
-        </div>
-
     </div>
 
-    <!-- Reports -->
-    <div id="deptReport" class="report-box">
-        <span class="close-btn" onclick="toggleReport('deptReport')">X</span>
-        <h5>Department Report</h5>
-        <table class="table table-dark table-bordered">
-            @foreach (System.Data.DataRow row in ((System.Data.DataTable)ViewBag.DepartmentList).Rows)
-            {
-                <tr><td>@row[0]</td><td>@row[1]</td></tr>
-            }
-        </table>
+    <div class="row mt-4 g-4">
+        <div class="col-md-6"><div class="chart-card"><h5>Teacher / Student Ratio</h5><div style="height:300px;"><canvas id="pieChart"></canvas></div></div></div>
+        <div class="col-md-6"><div class="chart-card"><h5>Course Wise Student Ratio</h5><div style="height:300px;"><canvas id="barChart"></canvas></div></div></div>
     </div>
-
-    <div id="courseReport" class="report-box">
-        <span class="close-btn" onclick="toggleReport('courseReport')">X</span>
-        <h5>Course Report</h5>
-        <table class="table table-dark table-bordered">
-            @foreach (System.Data.DataRow row in ((System.Data.DataTable)ViewBag.CourseList).Rows)
-            {
-                <tr><td>@row[0]</td><td>@row[1]</td></tr>
-            }
-        </table>
-    </div>
-
-    <div id="teacherReport" class="report-box">
-        <span class="close-btn" onclick="toggleReport('teacherReport')">X</span>
-        <h5>Teacher Report</h5>
-        <table class="table table-dark table-bordered">
-            @foreach (System.Data.DataRow row in ((System.Data.DataTable)ViewBag.TeacherList).Rows)
-            {
-                <tr><td>@row[0]</td><td>@row[1]</td></tr>
-            }
-        </table>
-    </div>
-
-    <div id="studentReport" class="report-box">
-        <span class="close-btn" onclick="toggleReport('studentReport')">X</span>
-        <h5>Student Report</h5>
-        <table class="table table-dark table-bordered">
-            @foreach (System.Data.DataRow row in ((System.Data.DataTable)ViewBag.StudentList).Rows)
-            {
-                <tr><td>@row[0]</td><td>@row[1]</td></tr>
-            }
-        </table>
-    </div>
-
-    <div class="row mt-4">
-
-        <div class="col-md-6">
-            <div class="chart-card">
-                <h5 class="title">Students vs Teachers</h5>
-                <div class="chart-container">
-                    <canvas id="pieChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="chart-card">
-                <h5 class="title">Department Wise Students</h5>
-                <div class="chart-container">
-                    <canvas id="barChart"></canvas>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
 </div>
 
 <script>
-function toggleReport(id){
-$("#"+id).slideToggle();
-}
+    let currentMode = '';
+    let dataTableInstance = null;
 
-var students=@Model.TotalStudents;
-var teachers=@Model.TotalTeachers;
+    function loadReport(mode) {
+        debugger;
+        currentMode = mode;
+        $('#reportContainer').slideDown();
+        $('#reportTitle').text(mode.toUpperCase() + " REPORT");
+        $('#deptFilterGroup, #courseFilterGroup').hide();
 
-var ctx=document.getElementById("pieChart").getContext("2d");
+        if (mode === 'dept') {
+            fetchData('/PrincipalDashboard/GetDepartments', {}, ['Sr.No.', 'Department Name']);
+        } else if (mode === 'course') {
+            $('#deptFilterGroup').show();
+            fetchData('/PrincipalDashboard/GetCourses', { deptId: $('#ddlDept').val() }, ['Sr.No.', 'Course Name']);
+        } else if (mode === 'teacher') {
+            $('#deptFilterGroup').show();
+            fetchData('/PrincipalDashboard/GetTeachers', { deptId: $('#ddlDept').val() }, ['Sr. No.', 'Teacher Name']);
+        } else if (mode === 'student') {
+            $('#deptFilterGroup, #courseFilterGroup').show();
+            fetchData('/PrincipalDashboard/GetStudents', { deptId: $('#ddlDept').val(), courseId: $('#ddlCourse').val() }, ['Sr. No.', 'Student Name']);
+        }
+    }
 
-var gradient1=ctx.createLinearGradient(0,0,0,400);
-gradient1.addColorStop(0,"#3b82f6");
-gradient1.addColorStop(1,"#06b6d4");
+    function fetchData(url, params, headers) {
+        // Destroy existing DataTable before modifying DOM
+        if (dataTableInstance) {
+            dataTableInstance.destroy();
+            dataTableInstance = null;
+        }
 
-var gradient2=ctx.createLinearGradient(0,0,0,400);
-gradient2.addColorStop(0,"#22c55e");
-gradient2.addColorStop(1,"#4ade80");
+        let headerHtml = '';
+        headers.forEach(h => headerHtml += `<th>${h}</th>`);
+        $('#tableHeader').html(headerHtml);
 
-new Chart(ctx,{
-type:"doughnut",
-data:{
-labels:["Students","Teachers"],
-datasets:[{
-data:[students,teachers],
-backgroundColor:[gradient1,gradient2]
-}]
-},
-options:{cutout:"65%"}
-});
+        $.get(url, params, function(data) {
+            let rows = '';
+            if (data && data.length > 0) {
+                $.each(data, function(i, item) {
+                    let val1 = item.id || item.srNo || (i + 1);
+                    let val2 = item.name;
+                    rows += `<tr><td>${val1}</td><td>${val2}</td></tr>`;
+                });
+            } else {
+                rows = `<tr><td colspan="${headers.length}" class="text-center text-danger fw-bold">Record Not Found</td></tr>`;
+            }
+            $('#tableBody').html(rows);
 
-var deptNames=@Html.Raw(Json.Encode(ViewBag.DeptNames));
-var deptStudents=@Html.Raw(Json.Encode(ViewBag.DeptStudents));
+            // Re-initialize DataTable only if data exists
+            if (data && data.length > 0) {
+                dataTableInstance = $('#reportTable').DataTable({
+                    "pageLength": 5,
+                    "lengthMenu": [5, 10, 25, 50],
+                    "language": { "search": "Quick Search:" }
+                });
+            }
+        });
+    }
 
-new Chart(document.getElementById("barChart"),{
-type:"bar",
-data:{
-labels:deptNames,
-datasets:[{
-data:deptStudents,
-backgroundColor:"#f59e0b",
-maxBarThickness:60
-}]
-},
-options:{
-responsive:true,
-maintainAspectRatio:false,
-plugins:{legend:{display:false}},
-scales:{y:{beginAtZero:true}}
-}
-});
+    function onDeptChange() {
+        let deptId = $('#ddlDept').val();
+        $.get('/PrincipalDashboard/GetCourses', { deptId: deptId }, function(data) {
+            let opts = '<option value="">All Courses</option>';
+            $.each(data, function(i, v) { opts += `<option value="${v.id}">${v.name}</option>`; });
+            $('#ddlCourse').html(opts);
+            loadReport(currentMode);
+        });
+    }
+
+    function onCourseChange() { loadReport(currentMode); }
+
+    $(document).ready(function() {
+        $.get('/PrincipalDashboard/GetDepartments', function(data) {
+            $.each(data, function(i, v) { $('#ddlDept').append(`<option value="${v.id}">${v.name}</option>`); });
+        });
+        initCharts();
+    });
+
+    function initCharts() {
+        new Chart(document.getElementById("pieChart"), {
+            type: 'doughnut',
+            data: {
+                labels: ["Students", "Teachers"],
+                datasets: [{ data: [@Model.TotalStudents, @Model.TotalTeachers], backgroundColor: ['#3b82f6', '#10b981'], borderWidth: 0 }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } } }
+        });
+
+        new Chart(document.getElementById("barChart"), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Encode(ViewBag.DeptNames)),
+                datasets: [{ label: 'Students', data: @Html.Raw(Json.Encode(ViewBag.DeptStudents)), backgroundColor: '#f59e0b' }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, ticks: { color: '#94a3b8' }, grid: { color: '#334155' } },
+                    x: { ticks: { color: '#94a3b8' }, grid: { display: false } }
+                },
+                plugins: { legend: { labels: { color: '#fff' } } }
+            }
+        });
+    }
 </script>
