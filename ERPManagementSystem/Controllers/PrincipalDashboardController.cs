@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web.Mvc;
 using ERPManagementSystem.Models;
 
@@ -10,7 +11,8 @@ namespace ERPManagementSystem.Controllers
 {
     public class PrincipalDashboardController : Controller
     {
-        string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
+        // Connection string ko ek baar define karein
+        private readonly string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
 
         public ActionResult PrincipalDashboard()
         {
@@ -20,52 +22,135 @@ namespace ERPManagementSystem.Controllers
             {
                 con.Open();
 
-                model.TotalDepartments = (int)new SqlCommand("select count(*) from Department", con).ExecuteScalar();
-                model.TotalCourses = (int)new SqlCommand("select count(*) from Course", con).ExecuteScalar();
-                model.TotalTeachers = (int)new SqlCommand("select count(*) from Teacher", con).ExecuteScalar();
-                model.TotalStudents = (int)new SqlCommand("select count(*) from Student", con).ExecuteScalar();
+                // Dashboard Stats
+                model.TotalDepartments = (int)new SqlCommand("SELECT COUNT(*) FROM Department", con).ExecuteScalar();
+                model.TotalCourses = (int)new SqlCommand("SELECT COUNT(*) FROM Course", con).ExecuteScalar();
+                model.TotalTeachers = (int)new SqlCommand("SELECT COUNT(*) FROM Teacher", con).ExecuteScalar();
+                model.TotalStudents = (int)new SqlCommand("SELECT COUNT(*) FROM Student", con).ExecuteScalar();
 
+                // Graph Data
                 List<string> deptNames = new List<string>();
                 List<int> deptStudents = new List<int>();
 
-                SqlCommand cmd = new SqlCommand(@"
-                select d.DepartmentName, count(s.StudentId) as TotalStudents
-                from Department d
-                left join Course c on c.DepartmentId=d.DepartmentId
-                left join Student s on s.CourseId=c.CourseId
-                group by d.DepartmentName", con);
+                string chartQuery = @"
+                    SELECT d.DepartmentName, COUNT(s.StudentId) AS TotalStudents
+                    FROM Department d
+                    LEFT JOIN Course c ON c.DepartmentId = d.DepartmentId
+                    LEFT JOIN Student s ON s.CourseId = c.CourseId
+                    GROUP BY d.DepartmentName";
 
-                SqlDataReader dr = cmd.ExecuteReader();
-                while (dr.Read())
+                using (SqlCommand cmd = new SqlCommand(chartQuery, con))
                 {
-                    int total = Convert.ToInt32(dr["TotalStudents"]);
-                    if (total > 0)
+                    using (SqlDataReader dr = cmd.ExecuteReader())
                     {
-                        deptNames.Add(dr["DepartmentName"].ToString());
-                        deptStudents.Add(total);
+                        while (dr.Read())
+                        {
+                            deptNames.Add(dr["DepartmentName"].ToString());
+                            deptStudents.Add(Convert.ToInt32(dr["TotalStudents"]));
+                        }
                     }
                 }
-                dr.Close();
 
                 ViewBag.DeptNames = deptNames;
                 ViewBag.DeptStudents = deptStudents;
 
-                // Reports
-                ViewBag.DepartmentList = GetTable("select * from Department", con);
-                ViewBag.CourseList = GetTable("select * from Course", con);
-                ViewBag.TeacherList = GetTable("select * from Teacher", con);
-                ViewBag.StudentList = GetTable("select * from Student", con);
+                // Reports (Tables)
+                ViewBag.DepartmentList = GetTable("SELECT * FROM Department", con);
+                ViewBag.CourseList = GetTable("SELECT * FROM Course", con);
+                ViewBag.TeacherList = GetTable("SELECT * FROM Teacher", con);
+                ViewBag.StudentList = GetTable("SELECT * FROM Student", con);
             }
 
             return View(model);
         }
 
+        // Helper Method: Connection reuse karne ke liye
         private DataTable GetTable(string query, SqlConnection con)
         {
-            SqlDataAdapter da = new SqlDataAdapter(query, con);
             DataTable dt = new DataTable();
-            da.Fill(dt);
+            using (SqlDataAdapter da = new SqlDataAdapter(query, con))
+            {
+                da.Fill(dt);
+            }
             return dt;
+        }
+
+        // Helper Method: Jab sirf query pass karni ho
+        private DataTable GetDataTable(string query, SqlParameter[] parameters = null)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection con = new SqlConnection(conStr))
+            {
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    if (parameters != null) cmd.Parameters.AddRange(parameters);
+                    using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                    {
+                        da.Fill(dt);
+                    }
+                }
+            }
+            return dt;
+        }
+
+        public JsonResult GetDepartments()
+        {
+            DataTable dt = GetDataTable("SELECT DepartmentId, DepartmentName FROM Department");
+            var list = dt.AsEnumerable().Select(r => new { id = r["DepartmentId"], name = r["DepartmentName"] });
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetCourses(int? deptId)
+        {
+            string query = "SELECT CourseId, CourseName FROM Course";
+            List<SqlParameter> prm = new List<SqlParameter>();
+
+            if (deptId.HasValue)
+            {
+                query += " WHERE DepartmentId = @deptId";
+                prm.Add(new SqlParameter("@deptId", deptId));
+            }
+
+            DataTable dt = GetDataTable(query, prm.ToArray());
+            var list = dt.AsEnumerable().Select(r => new { id = r["CourseId"], name = r["CourseName"] });
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetTeachers(int? deptId)
+        {
+            string query = "SELECT TeacherId, FirstName + ' ' + LastName AS Name FROM Teacher WHERE 1=1";
+            List<SqlParameter> prm = new List<SqlParameter>();
+
+            if (deptId.HasValue)
+            {
+                query += " AND DepartmentId = @deptId";
+                prm.Add(new SqlParameter("@deptId", deptId));
+            }
+
+            DataTable dt = GetDataTable(query, prm.ToArray());
+            var list = dt.AsEnumerable().Select((r, index) => new { srNo = index + 1, name = r["Name"] });
+            return Json(list, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetStudents(int? deptId, int? courseId)
+        {
+            string query = "SELECT StudentId, FirstName + ' ' + LastName AS Name FROM Student S inner join Course C on S.CourseId=C.CourseId WHERE 1=1";
+            List<SqlParameter> prm = new List<SqlParameter>();
+
+            if (deptId.HasValue)
+            {
+                query += " AND DepartmentId = @deptId";
+                prm.Add(new SqlParameter("@deptId", deptId));
+            }
+            if (courseId.HasValue)
+            {
+                query += " AND S.CourseId = @courseId";
+                prm.Add(new SqlParameter("@courseId", courseId));
+            }
+
+            DataTable dt = GetDataTable(query, prm.ToArray());
+            var list = dt.AsEnumerable().Select((r, index) => new { srNo = index + 1, name = r["Name"] });
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
     }
 }
