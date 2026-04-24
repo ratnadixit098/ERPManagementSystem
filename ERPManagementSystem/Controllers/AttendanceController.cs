@@ -6,14 +6,13 @@ using System.Data;
 using System.Web.Mvc;
 using System;
 using System.Xml;
-
 public class AttendanceController : Controller
 {
     string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
 
+    [CheckSession]
 
     // Timetable
-    [CheckSession]
     public ActionResult TimeTable()
     {
         List<Timetable> list = new List<Timetable>();

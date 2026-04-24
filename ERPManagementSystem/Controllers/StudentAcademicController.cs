@@ -8,6 +8,7 @@ using System.Web.Mvc;
 
 namespace ERPManagementSystem.Controllers
 {
+    [CheckSession]
     public class StudentAcademicController : Controller
     {
         SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["Constring"].ConnectionString);

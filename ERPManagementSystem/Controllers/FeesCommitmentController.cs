@@ -9,6 +9,7 @@ using ERPManagementSystem.Models;
 
 namespace ERPManagementSystem.Controllers
 {
+    [CheckSession]
     public class CommitmentController : Controller
     {
         string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class CourseController : Controller
 {
     string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
-
+    [CheckSession]
     public ActionResult Create()
     {
         BindDepartment();
