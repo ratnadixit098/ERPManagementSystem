@@ -10,6 +10,7 @@ public class TimetableController : Controller
 {
     string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
     [CheckSession]
+
     public ActionResult Create()
     {
         BindClass();
