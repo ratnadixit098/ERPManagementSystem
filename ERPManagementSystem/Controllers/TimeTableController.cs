@@ -127,4 +127,42 @@ public class TimetableController : Controller
 
         ViewBag.DayList = dayList;
     }
+
+    [HttpPost]
+    public JsonResult CheckTeacherConflict(int TeacherId, string DayOfWeek, string StartTime, string EndTime)
+    {
+        bool isConflict = false;
+        string message = "";
+        using (SqlConnection con = new SqlConnection(conStr))
+        {
+            SqlCommand cmd = new SqlCommand("CheckTeacherConflict", con);
+            cmd.CommandType = CommandType.StoredProcedure;
+
+            cmd.Parameters.AddWithValue("@TeacherId", TeacherId);
+            cmd.Parameters.AddWithValue("@DayOfWeek", DayOfWeek);
+            cmd.Parameters.AddWithValue("@StartTime", StartTime);
+            cmd.Parameters.AddWithValue("@EndTime", EndTime);
+
+            con.Open();
+            SqlDataReader dr = cmd.ExecuteReader();
+
+            if (dr.Read())
+            {
+                //message = $"{dr["FirstName"]} is already assigned to teach {dr["SubjectName"]} on {dr["DayOfWeek"]} from {dr["StartTime"]} to {dr["EndTime"]}.";
+
+                string type = dr["ConflictType"].ToString();
+
+                if (type == "TEACHER")
+                {
+                    message = $"{dr["Name"]} is already assigned to {dr["SubjectName"]} on {dr["DayOfWeek"]} from {dr["StartTime"]} to {dr["EndTime"]}.";
+                }
+                else if (type == "CLASS")
+                {
+                    message = $"This class already has {dr["Name"]} assigned for {dr["SubjectName"]} on {dr["DayOfWeek"]} from {dr["StartTime"]} to {dr["EndTime"]}.";
+                }
+            }
+        }
+
+        return Json(message);
+    }
 }
