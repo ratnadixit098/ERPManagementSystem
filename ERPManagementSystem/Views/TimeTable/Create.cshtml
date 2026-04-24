@@ -66,7 +66,7 @@
                         @Html.DropDownListFor(x => x.ClassId,
                         ViewBag.ClassList as IEnumerable<SelectListItem>,
                         "Select Class",
-                        new { @class = "form-select", required = "required" })
+                        new { @class = "form-select", required = "required",id="Class" })
                     </div>
 
                     <div class="col-sm-6">
@@ -82,7 +82,7 @@
                         @Html.DropDownListFor(x => x.TeacherId,
                         ViewBag.TeacherList as IEnumerable<SelectListItem>,
                         "Select Teacher",
-                        new { @class = "form-select", required = "required" })
+                        new { @class = "form-select", required = "required", id = "TeacherId" })
                     </div>
 
                     <div class="col-sm-6">
@@ -90,20 +90,20 @@
                         @Html.DropDownListFor(x => x.DayOfWeek,
                         ViewBag.DayList as IEnumerable<SelectListItem>,
                         "Select Day",
-                        new { @class = "form-select", required = "required" })
+                        new { @class = "form-select", required = "required", id = "DayOfWeek" })
                     </div>
 
                     <div class="col-sm-6">
                         <label>Start Time</label>
                         @Html.TextBoxFor(x => x.StartTime, "{0:hh:mm tt}",
-                        new { @class = "form-control", type = "time" })
+                        new { @class = "form-control", type = "time", id = "StartTime" })
 
                     </div>
 
                     <div class="col-sm-6">
                         <label>End Time</label>
                         @Html.TextBoxFor(x => x.EndTime, "{0:hh:mm tt}",
-                        new { @class = "form-control", type = "time", required = "required" })
+                        new { @class = "form-control", type = "time", required = "required", id = "EndTime" })
                     </div>
 
                 </div>
@@ -118,7 +118,8 @@
         </div>
     </div>
 </div>
-<script>document.getElementById("timeInput").addEventListener("change", function () {
+<script>
+    document.getElementById("timeInput").addEventListener("change", function () {
 
         let time = this.value; // 13:00
         if (!time) return;
@@ -131,5 +132,44 @@
         let formattedTime = hours + ":" + minutes + " " + ampm;
 
         document.getElementById("ampmTime").value = formattedTime;
-});
-    </script>
+    });
+</script>
+
+@*<span id="msg" style="color:red;"></span>*@
+
+<script>
+    $("#StartTime, #EndTime, #TeacherId, #DayOfWeek,#Class").on("change", function () {
+
+        var teacherId = $("#TeacherId").val();
+        var day = $("#DayOfWeek").val();
+        var start = $("#StartTime").val();
+        var end = $("#EndTime").val();
+        var classId = $("#Class").val();
+
+        if (teacherId && day && start && end && classId) {
+
+            $.ajax({
+                url: '/Timetable/CheckTeacherConflict',
+                type: 'POST',
+                data: {
+                    TeacherId: teacherId,
+                    DayOfWeek: day,
+                    StartTime: start,
+                    EndTime: end,
+                    Class: classId
+                },
+                success: function (res) {
+                    if (res !== "") {
+                        $("#msg").text(res);   // dynamic message
+                        alert(res);            // optional popup
+
+                        $('#StartTime').val('');
+                        $('#EndTime').val('');
+                    } else {
+                        $("#msg").text("");
+                    }
+                }
+            });
+        }
+    });
+</script>
