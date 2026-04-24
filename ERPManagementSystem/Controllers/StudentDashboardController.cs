@@ -23,22 +23,22 @@ namespace ERPManagementSystem.Controllers
 
                 // timetable + today attendance
                 SqlCommand cmd = new SqlCommand(@"
-                select 
-                t.DayOfWeek,
-                t.StartTime,
-                t.EndTime,
-                s.SubjectName,
-                te.FirstName+' '+te.LastName as TeacherName,
-                a.IsPresent
-                from TimeTable t
-                left join Subject s on s.SubjectId=t.SubjectId
-                left join Teacher te on te.TeacherId=t.TeacherId
-                left join Attendance a 
-                    on a.SubjectId=t.SubjectId 
-                    and a.ClassId=t.ClassId
-                    and a.StudentId=@studentId
-                    and cast(a.AttendanceDate as date)=cast(getdate() as date)
-                ", con);
+        SELECT 
+            t.DayOfWeek,
+            t.StartTime,
+            t.EndTime,
+            s.SubjectName,
+            te.FirstName + ' ' + te.LastName AS TeacherName,
+            a.IsPresent
+        FROM TimeTable t
+        LEFT JOIN Subject s ON s.SubjectId = t.SubjectId
+        LEFT JOIN Teacher te ON te.TeacherId = t.TeacherId
+        LEFT JOIN Attendance a 
+            ON a.SubjectId = t.SubjectId 
+            AND a.ClassId = t.ClassId
+            AND a.StudentId = @studentId
+            AND CAST(a.AttendanceDate AS DATE) = CAST(GETDATE() AS DATE)
+        ", con);
 
                 cmd.Parameters.AddWithValue("@studentId", studentId);
 
@@ -46,31 +46,22 @@ namespace ERPManagementSystem.Controllers
 
                 while (dr.Read())
                 {
-                    //TimeSpan start = (TimeSpan)dr["StartTime"];
-                    //TimeSpan end = (TimeSpan)dr["EndTime"];
+                    TimeSpan start = (TimeSpan)dr["StartTime"];
+                    TimeSpan end = (TimeSpan)dr["EndTime"];
 
-                    DateTime start = DateTime.ParseExact(dr["StartTime"].ToString(), "hh:mm tt", null);
-                    DateTime end = DateTime.ParseExact(dr["EndTime"].ToString(), "hh:mm tt", null);
-
-                    //list.Add(new Timetable
-                    //{
-                    //    DayOfWeek = dr["DayOfWeek"].ToString(),
-                    //    SubjectName = dr["SubjectName"].ToString(),
-                    //    Teacher = dr["TeacherName"].ToString(),
-                    //    Slot = start.Hours + "-" + end.Hours,
-                    //    IsPresent = dr["IsPresent"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IsPresent"])
-                    //});
                     list.Add(new Timetable
                     {
                         DayOfWeek = dr["DayOfWeek"].ToString(),
                         SubjectName = dr["SubjectName"].ToString(),
                         Teacher = dr["TeacherName"].ToString(),
 
-                        Slot = Convert.ToDateTime(dr["StartTime"]).ToString("hh:mm tt")
-         + " - " +
-           Convert.ToDateTime(dr["EndTime"]).ToString("hh:mm tt"),
+                        Slot = DateTime.Today.Add(start).ToString("hh:mm tt")
+                               + " - " +
+                               DateTime.Today.Add(end).ToString("hh:mm tt"),
 
-                        IsPresent = dr["IsPresent"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IsPresent"])
+                        IsPresent = dr["IsPresent"] == DBNull.Value
+                            ? (int?)null
+                            : Convert.ToInt32(dr["IsPresent"])
                     });
                 }
 
@@ -78,34 +69,40 @@ namespace ERPManagementSystem.Controllers
 
                 // total subjects
                 SqlCommand cmd2 = new SqlCommand(
-                    "select count(*) from TimeTable  where ClassId=@ClassId", con);
-                cmd2.Parameters.AddWithValue("@ClassId", Session["ClassId"]);
+                    "SELECT COUNT(*) FROM TimeTable WHERE ClassId = @ClassId", con);
 
+                cmd2.Parameters.AddWithValue("@ClassId", Session["ClassId"]);
                 ViewBag.TotalSubjects = cmd2.ExecuteScalar();
 
                 // total lectures
                 SqlCommand cmd3 = new SqlCommand(
-                    "select count(*) from TimeTable  where ClassId=@ClassId", con);
-                cmd3.Parameters.AddWithValue("@ClassId", Session["ClassId"]);
+                    "SELECT COUNT(*) FROM TimeTable WHERE ClassId = @ClassId", con);
 
+                cmd3.Parameters.AddWithValue("@ClassId", Session["ClassId"]);
                 ViewBag.TotalLectures = cmd3.ExecuteScalar();
 
                 // pending fees
-                SqlCommand cmd4 = new SqlCommand(
-                    "select Remaining = fc.TotalFees - isnull(sum(fp.PayAmount),0) from FeeCommitment fc left join FeePayment fp on fc.StudentId = fp.StudentId where fc.StudentId=@studentId group by fc.FeeType,fc.TotalFees", con);
+                SqlCommand cmd4 = new SqlCommand(@"
+            SELECT 
+                Remaining = fc.TotalFees - ISNULL(SUM(fp.PayAmount), 0)
+            FROM FeeCommitment fc
+            LEFT JOIN FeePayment fp 
+                ON fc.StudentId = fp.StudentId
+            WHERE fc.StudentId = @studentId
+            GROUP BY fc.FeeType, fc.TotalFees
+        ", con);
+
                 cmd4.Parameters.AddWithValue("@studentId", studentId);
                 ViewBag.PendingFees = cmd4.ExecuteScalar();
 
-
-                // ✅ SEMESTER ATTENDANCE FOR PIE CHART
+                // semester attendance for pie chart
                 SqlCommand cmd5 = new SqlCommand(@"
-               
-               select 
-                SUM(case when IsPresent = 1 then 1 else 0 end) as PresentCount,
-                SUM(case when IsPresent = 0 then 1 else 0 end) as AbsentCount
-                from Attendance
-                where StudentId = @studentId
-                ", con);
+            SELECT 
+                SUM(CASE WHEN IsPresent = 1 THEN 1 ELSE 0 END) AS PresentCount,
+                SUM(CASE WHEN IsPresent = 0 THEN 1 ELSE 0 END) AS AbsentCount
+            FROM Attendance
+            WHERE StudentId = @studentId
+        ", con);
 
                 cmd5.Parameters.AddWithValue("@studentId", studentId);
 
@@ -116,8 +113,13 @@ namespace ERPManagementSystem.Controllers
 
                 if (dr2.Read())
                 {
-                    present = dr2["PresentCount"] == DBNull.Value ? 0 : Convert.ToInt32(dr2["PresentCount"]);
-                    absent = dr2["AbsentCount"] == DBNull.Value ? 0 : Convert.ToInt32(dr2["AbsentCount"]);
+                    present = dr2["PresentCount"] == DBNull.Value
+                        ? 0
+                        : Convert.ToInt32(dr2["PresentCount"]);
+
+                    absent = dr2["AbsentCount"] == DBNull.Value
+                        ? 0
+                        : Convert.ToInt32(dr2["AbsentCount"]);
                 }
 
                 dr2.Close();
