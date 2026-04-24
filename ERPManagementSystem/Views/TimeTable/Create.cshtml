@@ -2,134 +2,183 @@
 @{
     Layout = "~/Views/Shared/Principal.cshtml";
 }
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
 
 <style>
+    /* Main Background */
     body {
-        background: #f5f7fb;
+        background-color: #0c1327;
+        color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    body {
-        background: #f5f7fb;
-        background-image: url('/content/images/OIP (1).jfif');
-        background-repeat: no-repeat;
-        background-size: cover;
-    }
-
+    /* Card Styling */
     .form-card {
-        border-radius: 18px;
+        background-color: #161d31; /* Slightly lighter than body for depth */
+        border: 1px solid #283046;
+        border-radius: 15px;
         max-width: 850px;
-        margin: auto;
+        margin: 40px auto;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
 
+    /* Header Styling */
     .form-header {
-        background: linear-gradient(135deg,#007bff,#004085);
+        background: linear-gradient(135deg, #0e162a, #1a237e);
         color: white;
-        border-radius: 18px 18px 0 0;
-        padding: 18px;
+        border-radius: 15px 15px 0 0;
+        padding: 20px;
+        border-bottom: 1px solid #283046;
+    }
+
+    /* Input & Select Styling */
+    .form-label {
+        font-weight: 500;
+        color: #b4b7bd; /* Muted white for labels */
+        margin-bottom: 8px;
     }
 
     .form-control, .form-select {
-        border-radius: 10px;
+        background-color: #0c1327;
+        border: 1px solid #404656;
+        color: #ffffff !important;
+        border-radius: 8px;
+        padding: 10px;
     }
 
-    label {
+        /* Focus effect */
+        .form-control:focus, .form-select:focus {
+            background-color: #0c1327;
+            border-color: #3751FF;
+            box-shadow: 0 0 0 0.25rem rgba(55, 81, 255, 0.25);
+            color: #fff;
+        }
+
+        /* Dropdown options color for some browsers */
+        .form-select option {
+            background-color: #161d31;
+            color: #fff;
+        }
+
+    /* Button Styling */
+    .btn-save {
+        background: #00ac69;
+        border: none;
+        padding: 12px 30px;
         font-weight: 600;
+        color: white;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+        .btn-save:hover {
+            background: #008a54;
+            transform: translateY(-2px);
+            color: white;
+            box-shadow: 0 5px 15px rgba(0, 172, 105, 0.3);
+        }
+
+    /* Success Alert */
+    .alert-success {
+        background-color: #161d31;
+        border: 1px solid #00ac69;
+        color: #00ac69;
+        border-radius: 10px;
+        max-width: 850px;
+        margin: 20px auto 0;
     }
 </style>
 
 @if (TempData["Success"] != null)
 {
-    <div class="container mt-3" style="max-width:850px;">
-        <div class="alert alert-success">
-            @TempData["Success"]
+    <div class="container">
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fa fa-check-circle me-2"></i> @TempData["Success"]
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
 }
 
-<div class="container mt-4">
-    <div class="card shadow form-card">
-
+<div class="container">
+    <div class="card form-card">
         <div class="form-header">
-            <h4><i class="fa fa-calendar"></i> Timetable Entry</h4>
+            <h4 class="mb-0"><i class="fa fa-calendar-alt me-2"></i> Timetable Entry</h4>
+            <p class="mb-0 small text-white-50">Create and manage schedule for classes and teachers</p>
         </div>
 
-        <div class="card-body">
-
+        <div class="card-body p-4">
             @using (Html.BeginForm())
             {
-                <div class="row g-3">
-
+                <div class="row g-4">
                     <div class="col-sm-6">
-                        <label>Class</label>
+                        <label class="form-label">Class</label>
                         @Html.DropDownListFor(x => x.ClassId,
-                        ViewBag.ClassList as IEnumerable<SelectListItem>,
-                        "Select Class",
-                        new { @class = "form-select", required = "required" })
+                             ViewBag.ClassList as IEnumerable<SelectListItem>,
+                             "Select Class",
+                             new { @class = "form-select", required = "required" })
                     </div>
 
                     <div class="col-sm-6">
-                        <label>Subject</label>
+                        <label class="form-label">Subject</label>
                         @Html.DropDownListFor(x => x.SubjectId,
-                        ViewBag.SubjectList as IEnumerable<SelectListItem>,
-                        "Select Subject",
-                        new { @class = "form-select", required = "required" })
+                             ViewBag.SubjectList as IEnumerable<SelectListItem>,
+                             "Select Subject",
+                             new { @class = "form-select", required = "required" })
                     </div>
 
                     <div class="col-sm-6">
-                        <label>Teacher</label>
+                        <label class="form-label">Teacher</label>
                         @Html.DropDownListFor(x => x.TeacherId,
-                        ViewBag.TeacherList as IEnumerable<SelectListItem>,
-                        "Select Teacher",
-                        new { @class = "form-select", required = "required" })
+                             ViewBag.TeacherList as IEnumerable<SelectListItem>,
+                             "Select Teacher",
+                             new { @class = "form-select", required = "required" })
                     </div>
 
                     <div class="col-sm-6">
-                        <label>Day</label>
+                        <label class="form-label">Day of Week</label>
                         @Html.DropDownListFor(x => x.DayOfWeek,
-                        ViewBag.DayList as IEnumerable<SelectListItem>,
-                        "Select Day",
-                        new { @class = "form-select", required = "required" })
+                             ViewBag.DayList as IEnumerable<SelectListItem>,
+                             "Select Day",
+                             new { @class = "form-select", required = "required" })
                     </div>
 
                     <div class="col-sm-6">
-                        <label>Start Time</label>
-                        @Html.TextBoxFor(x => x.StartTime, "{0:hh:mm tt}",
-                        new { @class = "form-control", type = "time" })
-
+                        <label class="form-label">Start Time</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0 text-white-50" style="border: 1px solid #404656;">
+                                <i class="fa fa-clock"></i>
+                            </span>
+                            @Html.TextBoxFor(x => x.StartTime, "{0:HH:mm}",
+                                 new { @class = "form-control border-start-0", type = "time", required = "required",@style= "background:#737373" })
+                        </div>
                     </div>
 
                     <div class="col-sm-6">
-                        <label>End Time</label>
-                        @Html.TextBoxFor(x => x.EndTime, "{0:hh:mm tt}",
-                        new { @class = "form-control", type = "time", required = "required" })
+                        <label class="form-label">End Time</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0 text-white-50" style="border: 1px solid #404656;">
+                                <i class="fa fa-hourglass-end"></i>
+                            </span>
+                            @Html.TextBoxFor(x => x.EndTime, "{0:HH:mm}",
+                                 new { @class = "form-control border-start-0", type = "time", required = "required", @style = "background:#737373" })
+                        </div>
                     </div>
-
                 </div>
 
-                <div class="text-end mt-4">
-                    <button type="submit" class="btn btn-success">
-                        <i class="fa fa-save"></i> Save Timetable
+                <hr class="my-4" style="border-top: 1px solid #283046; opacity: 1;" />
+
+                <div class="text-end">
+                    <button type="button" class="btn btn-outline-secondary me-2" onclick="window.history.back()">
+                        Cancel
+                    </button>
+                    <button type="submit" class="btn btn-save">
+                        <i class="fa fa-save me-2"></i> Save Timetable
                     </button>
                 </div>
             }
-
         </div>
     </div>
 </div>
-<script>document.getElementById("timeInput").addEventListener("change", function () {
 
-        let time = this.value; // 13:00
-        if (!time) return;
-
-        let [hours, minutes] = time.split(':');
-
-        let ampm = hours >= 12 ? 'PM' : 'AM';
-        hours = hours % 12 || 12;
-
-        let formattedTime = hours + ":" + minutes + " " + ampm;
-
-        document.getElementById("ampmTime").value = formattedTime;
-});
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

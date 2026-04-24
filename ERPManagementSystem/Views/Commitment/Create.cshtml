@@ -1,237 +1,170 @@
 ﻿@model ERPManagementSystem.Models.FeesCommitment
 
 @{
-    Layout = "~/Views/Shared/TeacherLayout.cshtml";
+    Layout = "~/Views/Shared/Principal.cshtml";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
 
 <style>
-    body {
-        background-color: #020617 !important;
-        color: #f1f5f9 !important;
-        font-family: 'Plus Jakarta Sans', sans-serif;
-    }
-
-
-    /* 💎 Main Form Card */
-    .form-card {
-        background: rgba(15, 23, 42, 0.8);
-        backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 24px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-        margin-bottom: 30px;
-    }
-
-    .form-header {
-        background: rgba(255, 255, 255, 0.02);
-        padding: 25px 30px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        display: flex;
-        align-items: center;
-        gap: 15px;
-    }
-
-    .header-icon {
-        width: 45px;
-        height: 45px;
-        background: linear-gradient(135deg, #6366f1, #a855f7);
+    .card {
         border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 18px;
-        box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
-    }
-
-    .form-header h4 {
-        margin: 0;
-        font-weight: 700;
-        background: linear-gradient(to right, #fff, #94a3b8);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    /* ⚡ Form Styling */
-    label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #94a3b8;
-        margin-bottom: 8px;
-        margin-top: 15px;
-        display: block;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .form-control, .form-select {
-        background: rgba(2, 6, 23, 0.6) !important;
-        border: 1px solid #334155 !important;
-        color: #f1f5f9 !important;
-        border-radius: 12px;
-        padding: 12px 15px;
-    }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #6366f1 !important;
-            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1) !important;
-        }
-
-    /* 🗓️ Installment Section */
-    #installmentDiv {
-        background: rgba(255, 255, 255, 0.02);
-        border-radius: 16px;
-        border: 1px dashed rgba(99, 102, 241, 0.3);
-        padding: 25px;
-        margin-top: 25px;
-    }
-
-    .table {
-        color: #f1f5f9;
-        margin-top: 15px;
-    }
-
-        .table th {
-            border-bottom: 1px solid #334155;
-            color: #6366f1;
-            font-size: 14px;
-            text-transform: uppercase;
-        }
-
-        .table td {
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            vertical-align: middle;
-            padding: 12px;
-        }
-
-    /* 🚀 Buttons */
-    .btn-add {
-        background: rgba(99, 102, 241, 0.1);
-        color: #818cf8;
-        border: 1px solid rgba(99, 102, 241, 0.2);
-        border-radius: 8px;
-        font-weight: 600;
-        padding: 8px 18px;
-        transition: 0.3s;
-    }
-
-        .btn-add:hover {
-            background: #6366f1;
-            color: white;
-        }
-
-    .btn-remove {
-        background: rgba(239, 68, 68, 0.1);
-        color: #ef4444;
         border: none;
-        border-radius: 8px;
-        width: 32px;
-        height: 32px;
-        transition: 0.2s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        background: #0c1327;
     }
 
-        .btn-remove:hover {
-            background: #ef4444;
-            color: white;
-        }
+    .card-header {
+        background: #0c1327;
+        color: white;
+        border-radius: 12px 12px 0 0 !important;
+        font-weight: bold;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: white;
+        margin-top: 10px;
+    }
+
+    .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
 
     .btn-save {
-        background: linear-gradient(135deg, #10b981, #059669);
-        color: white;
+        background: #1cc88a;
         border: none;
-        border-radius: 12px;
-        padding: 14px 30px;
-        font-weight: 700;
-        width: 100%;
-        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        padding: 10px 25px;
+        font-weight: bold;
         transition: 0.3s;
+        color: white;
     }
 
         .btn-save:hover {
+            background: #17a673;
             transform: translateY(-2px);
-            filter: brightness(1.1);
+            color: white;
         }
+
+    .btn-add {
+        border-radius: 50px;
+        font-size: 14px;
+    }
+
+    .table-container {
+        background: #f8f9fc;
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 20px;
+    }
+
+    .btn-remove {
+        color: #e74a3b;
+        cursor: pointer;
+        border: none;
+        background: none;
+    }
 </style>
 
-<div class="container container-main">
-    <div class="card form-card">
-        <div class="form-header">
-            <div class="header-icon"><i class="fa fa-handshake"></i></div>
-            <div>
-                <h4>Fee Commitment Entry</h4>
-                <small class="text-muted">Manage academic filters and payment schedules</small>
-            </div>
+<div class="">
+    <div class="card">
+        <div class="card-header d-flex align-items-center border-dark p-4">
+            <i class="fas fa-file-invoice-dollar me-2"></i>
+            <h4 class="mb-0">Fee Commitment Form</h4>
         </div>
+        <div class="card-body p-4">
 
-        <div class="card-body p-4 p-lg-5">
             @if (TempData["Success"] != null)
             {
-                <div class="alert alert-success bg-success bg-opacity-10 border-success border-opacity-25 text-success mb-4 rounded-4 px-4 py-3">
-                    <i class="fa fa-check-circle me-2"></i> @TempData["Success"]
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
 
             @using (Html.BeginForm())
             {
-                <div class="row g-4">
-                    <div class="col-md-6 border-end border-white border-opacity-5 pe-md-4">
-                        <label><i class="fa fa-building text-primary me-2"></i>College</label>
-                        @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "-Select College-", new { @class = "form-select", id = "CollegeId" })
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3"><i class="fas fa-university me-2"></i>Academic Details</h5>
 
-                        <label><i class="fa fa-sitemap text-primary me-2"></i>Department</label>
-                        <select id="DepartmentId" class="form-select"><option>-Select-</option></select>
+                        <div class="mb-3">
+                            <label class="form-label">College</label>
+                            @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "Select College", new { @class = "form-select", id = "CollegeId" })
+                        </div>
 
-                        <label><i class="fa fa-graduation-cap text-primary me-2"></i>Course</label>
-                        <select id="CourseId" class="form-select"><option>-Select-</option></select>
+                        <div class="mb-3">
+                            <label class="form-label">Department</label>
+                            <select id="DepartmentId" class="form-select"><option>Select Department</option></select>
+                        </div>
 
-                        <label><i class="fa fa-chalkboard-user text-primary me-2"></i>Class</label>
-                        <select id="ClassId" class="form-select"><option>-Select-</option></select>
+                        <div class="mb-3">
+                            <label class="form-label">Course</label>
+                            <select id="CourseId" class="form-select"><option>Select Course</option></select>
+                        </div>
 
-                        <label><i class="fa fa-user-graduate text-primary me-2"></i>Student</label>
-                        @Html.DropDownListFor(m => m.StudentId, new List<SelectListItem>(), "-Select-", new { @class = "form-select", id = "StudentId" })
+                        <div class="mb-3">
+                            <label class="form-label">Class</label>
+                            <select id="ClassId" class="form-select"><option>Select Class</option></select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Student</label>
+                            @Html.DropDownListFor(m => m.StudentId, new List<SelectListItem>(), "Select Student", new { @class = "form-select", id = "StudentId" })
+                        </div>
                     </div>
 
-                    <div class="col-md-6 ps-md-4">
-                        <label><i class="fa fa-indian-rupee-sign text-primary me-2"></i>Total Committed Fees</label>
-                        @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control", placeholder = "0.00" })
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3"><i class="fas fa-money-bill-wave me-2"></i>Payment Details</h5>
 
-                        <label><i class="fa fa-calendar-day text-primary me-2"></i>Payment Type</label>
-                        @Html.DropDownListFor(m => m.FeeType,
-                        new List<SelectListItem>
-                        {
-                            new SelectListItem{Text="Full One-Time Payment",Value="OnTime"},
-                            new SelectListItem{Text="Installment Plan",Value="Installment"}
-                        }, "Choose Plan", new { @class = "form-select", id = "FeeType" })
+                        <div class="mb-3">
+                            <label class="form-label">Total Fees</label>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control", placeholder = "0.00" })
+                            </div>
+                        </div>
 
-                        <div id="installmentDiv">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h6 class="m-0 text-info fw-bold small">Schedule Installments</h6>
-                                <button type="button" onclick="addRow()" class="btn btn-add btn-sm">
-                                    <i class="fa fa-plus me-1"></i> Add Date
+                        <div class="mb-3">
+                            <label class="form-label">Fee Type</label>
+                            @Html.DropDownListFor(m => m.FeeType,
+                            new List<SelectListItem>
+                            {
+                                new SelectListItem{Text="One Time Payment",Value="OnTime"},
+                                new SelectListItem{Text="Installment Basis",Value="Installment"}
+                            },
+                            "Select Payment Type",
+                            new { @class = "form-select", id = "FeeType" })
+                        </div>
+
+                        <div id="installmentDiv" style="display:none" class="table-container">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="mb-0 fw-bold text-secondary">Installment Schedule</h6>
+                                <button type="button" onclick="addRow()" class="btn btn-sm btn-outline-primary btn-add">
+                                    <i class="fas fa-plus"></i> Add Installment
                                 </button>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-borderless">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Amount</th>
-                                            <th width="40"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
+                            <table class="table table-sm table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th width="40px"></th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-5 pt-3 border-top border-white border-opacity-5">
+                <hr class="my-4" />
+
+                <div class="text-end">
+                    <button type="reset" class="btn btn-light me-2">Clear Form</button>
                     <button type="submit" class="btn btn-save">
-                        <i class="fa fa-save me-2"></i> Finalize Commitment
+                        <i class="fas fa-check-circle me-1"></i> Save Commitment
                     </button>
                 </div>
             }
@@ -239,39 +172,53 @@
     </div>
 </div>
 
+<script src="~/Scripts/jquery-3.7.0.min.js"></script>
 <script>
     // Toggle Installment Div
     $("#FeeType").change(function () {
-        if ($(this).val() == "Installment")
+        if ($(this).val() == "Installment") {
             $("#installmentDiv").fadeIn();
-        else {
+            if ($("table tbody tr").length === 0) addRow(); // Auto-add first row
+        } else {
             $("#installmentDiv").fadeOut();
-            $("table tbody").empty();
         }
     });
 
     function addRow() {
-        var row = `<tr class="animate__animated animate__fadeIn">
+        var row = `<tr>
             <td><input type="date" name="InstallmentDate" class="form-control form-control-sm"/></td>
-            <td><input type="text" name="InstallmentAmount" class="form-control form-control-sm" placeholder="₹ 0.00"/></td>
-            <td class="text-center"><button type="button" onclick="removeRow(this)" class="btn-remove"><i class="fa fa-trash-alt"></i></button></td>
+            <td><input type="number" name="InstallmentAmount" class="form-control form-control-sm" placeholder="Amount"/></td>
+            <td class="text-center"><button type="button" onclick="removeRow(this)" class="btn-remove"><i class="fas fa-times-circle"></i></button></td>
         </tr>`;
         $("table tbody").append(row);
     }
 
     function removeRow(btn) {
-        $(btn).closest("tr").fadeOut(200, function () { $(this).remove(); });
+        $(btn).closest("tr").fadeOut(300, function () { $(this).remove(); });
     }
 
-    // Cascading Dropdowns Logic
-    $("#CollegeId").change(function () {
-        $.get("/Commitment/GetDepartment", { collegeId: $(this).val() }, function (data) {
-            $("#DepartmentId").empty().append("<option value=''>-Select-</option>");
-            $.each(data, function (i, row) {
-                $("#DepartmentId").append("<option value='" + row.DepartmentId + "'>" + row.DepartmentName + "</option>");
+    // Cascading AJAX (Aapka existing logic)
+    function setupCascade(triggerId, targetId, url, paramName, placeholder) {
+        $("#" + triggerId).change(function () {
+            var val = $(this).val();
+            var target = $("#" + targetId);
+            target.empty().append('<option value="">Loading...</option>');
+
+            $.get(url, { [paramName]: val }, function (data) {
+                target.empty().append('<option value="">' + placeholder + '</option>');
+                $.each(data, function (i, row) {
+                    // Logic for mapping fields (DepartmentId/Name etc.)
+                    var idField = Object.keys(row)[0];
+                    var textField = Object.keys(row)[1];
+                    target.append("<option value='" + row[idField] + "'>" + (row[textField] || row['Section']) + "</option>");
+                });
             });
         });
-    });
+    }
 
-    $("#DepartmentId").change(function () {
-        $.get("/Commitment/GetCourse", { departmentId: $(this).
+    // Initialize cascading
+    setupCascade("CollegeId", "DepartmentId", "/Commitment/GetDepartment", "collegeId", "Select Department");
+    setupCascade("DepartmentId", "CourseId", "/Commitment/GetCourse", "departmentId", "Select Course");
+    setupCascade("CourseId", "ClassId", "/Commitment/GetClass", "courseId", "Select Class");
+    setupCascade("ClassId", "StudentId", "/Commitment/GetStudent", "classId", "Select Student");
+</script>
