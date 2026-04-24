@@ -10,7 +10,7 @@ using System.Collections.Generic;
 public class StudentController : Controller
 {
     string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
-
+    [CheckSession]
     public ActionResult Create()
     {
         BindCourse();

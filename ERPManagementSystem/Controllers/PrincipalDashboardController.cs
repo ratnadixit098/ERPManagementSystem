@@ -9,6 +9,7 @@ using ERPManagementSystem.Models;
 
 namespace ERPManagementSystem.Controllers
 {
+    [CheckSession]
     public class PrincipalDashboardController : Controller
     {
         // Connection string ko ek baar define karein

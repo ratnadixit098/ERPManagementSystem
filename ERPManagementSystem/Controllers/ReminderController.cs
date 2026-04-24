@@ -10,6 +10,7 @@ using System.Configuration;
 
 namespace ERPManagementSystem.Controllers
 {
+    [CheckSession]
     public class ReminderController : Controller
     {
         string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;

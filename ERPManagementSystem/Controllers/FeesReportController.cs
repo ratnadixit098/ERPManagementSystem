@@ -10,7 +10,7 @@ using ERPManagementSystem.Models;
 public class FeesReportController : Controller
 {
     string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
-
+    [CheckSession]
     public ActionResult Create(int? CollegeId, int? DepartmentId, int? CourseId, int? Semester, string AcademicYear)
     {
         BindCollege();

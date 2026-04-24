@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class DepartmentController : Controller
 {
     string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
-
+    [CheckSession]
     public ActionResult Create()
     {
         BindCollege();

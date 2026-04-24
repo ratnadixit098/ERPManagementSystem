@@ -8,7 +8,7 @@ using System.Collections.Generic;
 public class FeesStructureController : Controller
 {
     string conStr = ConfigurationManager.ConnectionStrings["Constring"].ConnectionString;
-
+    [CheckSession]
     public ActionResult Create()
     {
         BindCourse();
