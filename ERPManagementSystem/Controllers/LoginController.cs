@@ -109,7 +109,7 @@ namespace ERPManagementSystem.Controllers
                     return Json(new
                     {
                         success = true,
-                        redirectUrl = Url.Action("TimeTable", "Attendance")
+                        redirectUrl = Url.Action("TeacherDashboard", "TeacherDashboard")
                     });
                 }
                 else if (user.Role == "Principal")
@@ -117,7 +117,8 @@ namespace ERPManagementSystem.Controllers
                     return Json(new
                     {
                         success = true,
-                        redirectUrl = Url.Action("create", "Student")
+                        redirectUrl = Url.Action("PrincipalDashboard", "PrincipalDashboard")
+                       
                     });
                 }
                 else

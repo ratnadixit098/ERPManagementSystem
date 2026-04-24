@@ -105,7 +105,7 @@ public class AttendanceController : Controller
             cmd.Parameters.AddWithValue("@SubjectId", item.SubjectId);
             cmd.Parameters.AddWithValue("@Date", DateTime.Now);
             cmd.Parameters.AddWithValue("@IsPresent", item.IsPresent);
-            cmd.Parameters.AddWithValue("@TeacherId", 1);
+            cmd.Parameters.AddWithValue("@TeacherId", Convert.ToInt32(Session["TeacherId"]));
 
             cmd.ExecuteNonQuery();
         }
