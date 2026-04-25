@@ -46,8 +46,8 @@ namespace ERPManagementSystem.Controllers
 
                 while (dr.Read())
                 {
-                    TimeSpan start = (TimeSpan)dr["StartTime"];
-                    TimeSpan end = (TimeSpan)dr["EndTime"];
+                    DateTime start = DateTime.ParseExact(dr["StartTime"].ToString(), "hh:mm tt", null);
+                    DateTime end = DateTime.ParseExact(dr["EndTime"].ToString(), "hh:mm tt", null);
 
                     list.Add(new Timetable
                     {
@@ -55,13 +55,11 @@ namespace ERPManagementSystem.Controllers
                         SubjectName = dr["SubjectName"].ToString(),
                         Teacher = dr["TeacherName"].ToString(),
 
-                        Slot = DateTime.Today.Add(start).ToString("hh:mm tt")
-                               + " - " +
-                               DateTime.Today.Add(end).ToString("hh:mm tt"),
+                        Slot = Convert.ToDateTime(dr["StartTime"]).ToString("hh:mm tt")
+          + " - " +
+            Convert.ToDateTime(dr["EndTime"]).ToString("hh:mm tt"),
 
-                        IsPresent = dr["IsPresent"] == DBNull.Value
-                            ? (int?)null
-                            : Convert.ToInt32(dr["IsPresent"])
+                        IsPresent = dr["IsPresent"] == DBNull.Value ? (int?)null : Convert.ToInt32(dr["IsPresent"])
                     });
                 }
 
