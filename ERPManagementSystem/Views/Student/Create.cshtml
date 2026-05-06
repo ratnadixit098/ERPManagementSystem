@@ -14,16 +14,28 @@
         font-family: 'Plus Jakarta Sans', sans-serif;
     }
 
-
     .form-card {
         background: rgba(15, 23, 42, 0.8);
         backdrop-filter: blur(12px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 24px;
-        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         max-width: 1000px;
         margin: auto;
         overflow: hidden;
+    }
+
+    /* Error Message Styling */
+    .error-msg {
+        color: #ff4d4d !important;
+        font-size: 12px;
+        font-weight: 500;
+        margin-top: 5px;
+        display: block;
+    }
+
+    input.error, select.error, textarea.error {
+        border: 1px solid #334155 !important;
+        background: rgba(2, 6, 23, 0.6) !important;
     }
 
     .form-header {
@@ -57,7 +69,6 @@
         display: block;
     }
 
-    /* 🔥 Perfect Alignment: Same height for TextBox & Select */
     .form-control, .form-select {
         background: rgba(2, 6, 23, 0.6) !important;
         border: 1px solid #334155 !important;
@@ -66,17 +77,6 @@
         height: 50px;
         padding: 10px 16px;
         font-size: 14px;
-        transition: all 0.2s ease;
-    }
-
-    textarea.form-control {
-        height: auto !important;
-    }
-
-    .form-control:focus, .form-select:focus {
-        border-color: #22c55e !important;
-        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15) !important;
-        background: rgba(2, 6, 23, 0.8) !important;
     }
 
     .btn-save {
@@ -87,59 +87,68 @@
         padding: 12px 35px;
         font-weight: 700;
         transition: 0.3s;
+        cursor: pointer;
     }
-
-        .btn-save:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px rgba(34, 197, 94, 0.3);
-        }
 </style>
 
-<div class="container container-main">
+<div class="container container-main py-5">
 
-    @if (TempData["Success"] != null || TempData["Error"] != null)
+    @* --- SUCCESS / ERROR MESSAGE SECTION --- *@
+    @if (TempData["Success"] != null)
     {
-        <div class="alert @(TempData["Success"] != null ? "alert-success" : "alert-danger") bg-opacity-10 border-opacity-20 d-flex align-items-center mx-auto mb-4" style="max-width:1000px; border-radius:15px;">
-            <i class="fa-solid @(TempData["Success"] != null ? "fa-circle-check" : "fa-triangle-exclamation") me-2"></i>
-            @((TempData["Success"] ?? TempData["Error"]).ToString())
+        <div class="alert alert-success bg-success bg-opacity-10 text-success border-success border-opacity-25 alert-dismissible fade show mx-auto mb-4" style="max-width:1000px; border-radius:15px;" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i> @TempData["Success"]
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger bg-danger bg-opacity-10 text-danger border-danger border-opacity-25 alert-dismissible fade show mx-auto mb-4" style="max-width:1000px; border-radius:15px;" role="alert">
+            <i class="fa-solid fa-triangle-exclamation me-2"></i> @TempData["Error"]
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     }
 
     <div class="card form-card">
         <div class="form-header">
             <div class="header-icon"><i class="fa fa-user-graduate"></i></div>
-            <div class="text-white-50">
-                <h4 class="m-0 fw-bold">Student Entry</h4>
-                <small class="text-muted text-white-50">Register a new student into the ERP system</small>
+            <div>
+                <h4 class="m-0 fw-bold text-white">Student Entry</h4>
+                <small class="text-white-50 text-danger" style="color:red!important">Please fill all fields to save data</small>
             </div>
         </div>
 
         <div class="card-body p-4 p-lg-5">
-            @using (Html.BeginForm())
+            @using (Html.BeginForm("Create", "Student", FormMethod.Post, new { id = "studentForm" }))
             {
+                @Html.AntiForgeryToken()
                 <div class="row g-4">
+                    @* Input Fields *@
                     <div class="col-md-6">
                         <label>Enrollment No</label>
-                        @Html.TextBoxFor(x => x.EnrollmentNo, new { @class = "form-control", placeholder = "ERP-101", required = "required" })
+                        @Html.TextBoxFor(x => x.EnrollmentNo, new { @class = "form-control", placeholder = "ERP-101" })
                     </div>
+
                     <div class="col-md-6">
                         <label>Admission Date</label>
-                        @Html.TextBoxFor(x => x.AdmissionDate, new { @class = "form-control", type = "date", required = "required" })
+                        @Html.TextBoxFor(x => x.AdmissionDate, new { @class = "form-control", type = "date" })
                     </div>
 
                     <div class="col-md-6">
                         <label>Post</label>
-                        @Html.DropDownListFor(x => x.PostId, ViewBag.PostList as IEnumerable<SelectListItem>, "Select Post", new { @class = "form-select", required = "required" })
+                        @Html.DropDownListFor(x => x.PostId, ViewBag.PostList as IEnumerable<SelectListItem>, "Select Post", new { @class = "form-select" })
                     </div>
+
                     <div class="col-md-6">
                         <label>Course</label>
-                        @Html.DropDownListFor(x => x.CourseId, ViewBag.CourseList as IEnumerable<SelectListItem>, "Select Course", new { @class = "form-select", required = "required" })
+                        @Html.DropDownListFor(x => x.CourseId, ViewBag.CourseList as IEnumerable<SelectListItem>, "Select Course", new { @class = "form-select" })
                     </div>
 
                     <div class="col-md-6">
                         <label>Class</label>
-                        @Html.DropDownListFor(x => x.ClassId, ViewBag.ClassList as IEnumerable<SelectListItem>, "Select Class", new { @class = "form-select", required = "required" })
+                        @Html.DropDownListFor(x => x.ClassId, ViewBag.ClassList as IEnumerable<SelectListItem>, "Select Class", new { @class = "form-select" })
                     </div>
+
                     <div class="col-md-6">
                         <label>Academic Year</label>
                         @Html.DropDownListFor(x => x.YearOfStudent, new List<SelectListItem>
@@ -148,7 +157,7 @@
                             new SelectListItem{ Text="2nd Year", Value="2"},
                             new SelectListItem{ Text="3rd Year", Value="3"},
                             new SelectListItem{ Text="4th Year", Value="4"}
-                        }, "Select Year", new { @class = "form-select", required = "required" })
+                        }, "Select Year", new { @class = "form-select" })
                     </div>
 
                     <div class="col-md-6">
@@ -159,17 +168,19 @@
                             new SelectListItem{ Text="Semester 3", Value="3"}, new SelectListItem{ Text="Semester 4", Value="4"},
                             new SelectListItem{ Text="Semester 5", Value="5"}, new SelectListItem{ Text="Semester 6", Value="6"},
                             new SelectListItem{ Text="Semester 7", Value="7"}, new SelectListItem{ Text="Semester 8", Value="8"}
-                        }, "Select Semester", new { @class = "form-select", required = "required" })
+                        }, "Select Semester", new { @class = "form-select" })
                     </div>
+
                     <div class="col-md-6">
                         <label>First Name</label>
-                        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", placeholder = "Enter First Name", required = "required" })
+                        @Html.TextBoxFor(x => x.FirstName, new { @class = "form-control", placeholder = "First Name" })
                     </div>
 
                     <div class="col-md-6">
                         <label>Last Name</label>
-                        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", placeholder = "Enter Last Name" })
+                        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control", placeholder = "Last Name" })
                     </div>
+
                     <div class="col-md-6">
                         <label>Mobile Number</label>
                         @Html.TextBoxFor(x => x.Mobile, new { @class = "form-control", maxlength = "10", placeholder = "10 Digit Mobile No" })
@@ -177,8 +188,9 @@
 
                     <div class="col-md-6">
                         <label>Email Address</label>
-                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", type = "email", placeholder = "student@example.com" })
+                        @Html.TextBoxFor(x => x.Email, new { @class = "form-control", placeholder = "student@example.com" })
                     </div>
+
                     <div class="col-md-6">
                         <label>Father's Name</label>
                         @Html.TextBoxFor(x => x.FatherName, new { @class = "form-control", placeholder = "Father's Full Name" })
@@ -186,17 +198,50 @@
 
                     <div class="col-md-12">
                         <label>Permanent Address</label>
-                        @Html.TextAreaFor(x => x.Address, new { @class = "form-control", rows = "2", placeholder = "Enter full residential address" })
+                        @Html.TextAreaFor(x => x.Address, new { @class = "form-control", rows = "2", placeholder = "Full Address" })
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-end gap-3 mt-5 pt-4 border-top border-white border-opacity-10">
                     <button type="reset" class="btn btn-outline-secondary border-0 text-white-50">Reset</button>
-                    <button type="submit" class="btn btn-save">
-                        <i class="fa fa-save me-2"></i> Save Student Data
-                    </button>
+                    <button type="submit" class="btn btn-save">Save Student Data</button>
                 </div>
             }
         </div>
     </div>
 </div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Validation Rules
+        $("#studentForm").validate({
+            rules: {
+                EnrollmentNo: "required",
+                AdmissionDate: "required",
+                PostId: "required",
+                CourseId: "required",
+                ClassId: "required",
+                YearOfStudent: "required",
+                Semester: "required",
+                FirstName: { required: true, minlength: 2 },
+                LastName: "required",
+                Mobile: { required: true, digits: true, minlength: 10, maxlength: 10 },
+                Email: { required: true, email: true },
+                FatherName: "required",
+                Address: "required"
+            },
+            messages: {
+                EnrollmentNo: "Required",
+                FirstName: "Enter valid first name",
+                Mobile: "Enter 10 digit number",
+                Email: "Enter valid email",
+                Address: "Address is required"
+            },
+            errorElement: "span",
+            errorClass: "error-msg"
+        });
+    });
+</script>

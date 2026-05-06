@@ -27,7 +27,7 @@
         margin-top: 10px;
     }
 
-    .form-control:focus {
+    .form-control:focus, .form-select:focus {
         border-color: #4e73df;
         box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
     }
@@ -47,11 +47,6 @@
             color: white;
         }
 
-    .btn-add {
-        border-radius: 50px;
-        font-size: 14px;
-    }
-
     .table-container {
         background: #f8f9fc;
         padding: 15px;
@@ -65,9 +60,21 @@
         border: none;
         background: none;
     }
+
+    /* Validation Error Styling */
+    .error {
+        color: #ff6b6b;
+        font-size: 0.85rem;
+        margin-top: 5px;
+        display: block;
+    }
+
+    input.error, select.error {
+        border: 2px solid #ff6b6b !important;
+    }
 </style>
 
-<div class="">
+<div class="container-fluid py-4">
     <div class="card">
         <div class="card-header d-flex align-items-center border-dark p-4">
             <i class="fas fa-file-invoice-dollar me-2"></i>
@@ -83,7 +90,7 @@
                 </div>
             }
 
-            @using (Html.BeginForm())
+            @using (Html.BeginForm("Create", "Commitment", FormMethod.Post, new { id = "feesForm" }))
             {
                 <div class="row">
                     <div class="col-md-6">
@@ -91,22 +98,28 @@
 
                         <div class="mb-3">
                             <label class="form-label">College</label>
-                            @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "Select College", new { @class = "form-select", id = "CollegeId" })
+                            @Html.DropDownList("CollegeId", (IEnumerable<SelectListItem>)ViewBag.CollegeList, "Select College", new { @class = "form-select", id = "CollegeId", name = "CollegeId" })
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Department</label>
-                            <select id="DepartmentId" class="form-select"><option>Select Department</option></select>
+                            <select id="DepartmentId" name="DepartmentId" class="form-select">
+                                <option value="">Select Department</option>
+                            </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Course</label>
-                            <select id="CourseId" class="form-select"><option>Select Course</option></select>
+                            <select id="CourseId" name="CourseId" class="form-select">
+                                <option value="">Select Course</option>
+                            </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Class</label>
-                            <select id="ClassId" class="form-select"><option>Select Class</option></select>
+                            <select id="ClassId" name="ClassId" class="form-select">
+                                <option value="">Select Class</option>
+                            </select>
                         </div>
 
                         <div class="mb-3">
@@ -122,7 +135,7 @@
                             <label class="form-label">Total Fees</label>
                             <div class="input-group">
                                 <span class="input-group-text">₹</span>
-                                @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control", placeholder = "0.00" })
+                                @Html.TextBoxFor(m => m.TotalFees, new { @class = "form-control", placeholder = "0.00", id = "TotalFees" })
                             </div>
                         </div>
 
@@ -141,11 +154,11 @@
                         <div id="installmentDiv" style="display:none" class="table-container">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h6 class="mb-0 fw-bold text-secondary">Installment Schedule</h6>
-                                <button type="button" onclick="addRow()" class="btn btn-sm btn-outline-primary btn-add">
+                                <button type="button" onclick="addRow()" class="btn btn-sm btn-outline-primary rounded-pill">
                                     <i class="fas fa-plus"></i> Add Installment
                                 </button>
                             </div>
-                            <table class="table table-sm table-hover align-middle">
+                            <table class="table table-sm table-hover align-middle" id="installmentTable">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Date</th>
@@ -155,11 +168,12 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
+                            <div class="text-danger small" id="installmentError"></div>
                         </div>
                     </div>
                 </div>
 
-                <hr class="my-4" />
+                <hr class="my-4" style="background-color: #ffffff33;" />
 
                 <div class="text-end">
                     <button type="reset" class="btn btn-light me-2">Clear Form</button>
@@ -173,31 +187,92 @@
 </div>
 
 <script src="~/Scripts/jquery-3.7.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+
 <script>
-    // Toggle Installment Div
-    $("#FeeType").change(function () {
-        if ($(this).val() == "Installment") {
-            $("#installmentDiv").fadeIn();
-            if ($("table tbody tr").length === 0) addRow(); // Auto-add first row
-        } else {
-            $("#installmentDiv").fadeOut();
-        }
+    $(document).ready(function () {
+
+        // 1. Validation Logic
+        $("#feesForm").validate({
+            rules: {
+                CollegeId: "required",
+                DepartmentId: "required",
+                CourseId: "required",
+                ClassId: "required",
+                StudentId: "required",
+                TotalFees: {
+                    required: true,
+                    number: true,
+                    min: 1
+                },
+                FeeType: "required"
+            },
+            messages: {
+                CollegeId: "Please select College",
+                DepartmentId: "Please select Department",
+                CourseId: "Please select Course",
+                ClassId: "Please select Class",
+                StudentId: "Please select Student",
+                TotalFees: "Enter valid total fees",
+                FeeType: "Select a payment type"
+            }
+        });
+
+        // 2. Installment Show/Hide
+        $("#FeeType").change(function () {
+            if ($(this).val() == "Installment") {
+                $("#installmentDiv").fadeIn();
+                if ($("#installmentTable tbody tr").length === 0) addRow();
+            } else {
+                $("#installmentDiv").fadeOut();
+                $("#installmentTable tbody").empty();
+            }
+        });
+
+        // 3. Submit Validation (Match Total Fees with Installments)
+        $("#feesForm").on("submit", function (e) {
+            if (!$(this).valid()) return false;
+
+            if ($("#FeeType").val() == "Installment") {
+                var totalFees = parseFloat($("#TotalFees").val()) || 0;
+                var sumInstallments = 0;
+                var allFilled = true;
+
+                $("input[name='InstallmentAmount']").each(function () {
+                    var val = parseFloat($(this).val()) || 0;
+                    if (val <= 0) allFilled = false;
+                    sumInstallments += val;
+                });
+
+                if (!allFilled) {
+                    alert("Please enter valid amount for all installments.");
+                    return false;
+                }
+
+                if (sumInstallments !== totalFees) {
+                    alert("Total of installments (₹" + sumInstallments + ") must be equal to Total Fees (₹" + totalFees + ")");
+                    return false;
+                }
+            }
+        });
     });
 
+    // Add Row Function
     function addRow() {
         var row = `<tr>
-            <td><input type="date" name="InstallmentDate" class="form-control form-control-sm"/></td>
-            <td><input type="number" name="InstallmentAmount" class="form-control form-control-sm" placeholder="Amount"/></td>
+            <td><input type="date" name="InstallmentDate" class="form-control form-control-sm" required/></td>
+            <td><input type="number" name="InstallmentAmount" class="form-control form-control-sm" placeholder="Amount" required min="1"/></td>
             <td class="text-center"><button type="button" onclick="removeRow(this)" class="btn-remove"><i class="fas fa-times-circle"></i></button></td>
         </tr>`;
-        $("table tbody").append(row);
+        $("#installmentTable tbody").append(row);
     }
 
+    // Remove Row Function
     function removeRow(btn) {
-        $(btn).closest("tr").fadeOut(300, function () { $(this).remove(); });
+        $(btn).closest("tr").remove();
     }
 
-    // Cascading AJAX (Aapka existing logic)
+    // Cascading Logic
     function setupCascade(triggerId, targetId, url, paramName, placeholder) {
         $("#" + triggerId).change(function () {
             var val = $(this).val();
@@ -207,18 +282,17 @@
             $.get(url, { [paramName]: val }, function (data) {
                 target.empty().append('<option value="">' + placeholder + '</option>');
                 $.each(data, function (i, row) {
-                    // Logic for mapping fields (DepartmentId/Name etc.)
                     var idField = Object.keys(row)[0];
                     var textField = Object.keys(row)[1];
-                    target.append("<option value='" + row[idField] + "'>" + (row[textField] || row['Section']) + "</option>");
+                    target.append("<option value='" + row[idField] + "'>" + (row[textField] || row['Section'] || row['ClassName']) + "</option>");
                 });
             });
         });
     }
 
-    // Initialize cascading
     setupCascade("CollegeId", "DepartmentId", "/Commitment/GetDepartment", "collegeId", "Select Department");
     setupCascade("DepartmentId", "CourseId", "/Commitment/GetCourse", "departmentId", "Select Course");
     setupCascade("CourseId", "ClassId", "/Commitment/GetClass", "courseId", "Select Class");
     setupCascade("ClassId", "StudentId", "/Commitment/GetStudent", "classId", "Select Student");
+
 </script>
