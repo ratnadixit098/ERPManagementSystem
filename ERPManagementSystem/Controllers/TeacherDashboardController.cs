@@ -58,7 +58,7 @@ namespace ERPManagementSystem.Controllers
         inner join Course co on co.CourseId=c.CourseId
         inner join Department d on d.DepartmentId=co.DepartmentId
 		inner join teacher on teacher.TeacherId= t.TeacherId
-		and datename(WEEKDAY,getdate())=t.DayOfWeek
+		--and datename(WEEKDAY,getdate())=t.DayOfWeek
 		--and datename(WEEKDAY,dateadd(day,1,getdate()))=t.DayOfWeek
                 ", con);
                 cmd.Parameters.AddWithValue("@teacherId", teacherId);
