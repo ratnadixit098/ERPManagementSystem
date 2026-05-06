@@ -22,7 +22,9 @@ namespace ERPManagementSystem.Controllers
             SqlConnection con = new SqlConnection(conStr);
 
             string query = @"
-  select *,TotalFees - isnull((Paid),0) Remaining from ( SELECT Amount=sum(Amount), Paid=max(PayAmount), s.StudentId, DueDate=max(FeeInstallment.DueDate) ,TotalFees=max(TotalFees), LastReminderDate=max(LastReminderDate) ,StudentName=  s.FirstName+' '+LastName, s.Email FROM (select* from FeeCommitment )fc JOIN Student s ON s.StudentId = fc.StudentId left join FeeInstallment on FeeInstallment.CommitmentId=fc.CommitmentId LEFT JOIN (select PayAmount=sum(PayAmount),StudentId from FeePayment fp group by StudentId)fp ON fp.StudentId = fc.StudentId WHERE  (FeeInstallment.DueDate < convert(date,GETDATE()) or fc.FeeType='Ontime') group by s.StudentId, s.FirstName+' '+LastName, s.Email )t where convert(decimal,Paid)< convert(decimal,Amount)";
+  select *,TotalFees - isnull((Paid),0) Remaining from ( SELECT Amount=sum(Amount), Paid=max(PayAmount), s.StudentId, DueDate=max(FeeInstallment.DueDate) ,TotalFees=max(TotalFees), LastReminderDate=max(LastReminderDate) ,StudentName=  s.FirstName+' '+LastName, s.Email FROM (select* from FeeCommitment )fc JOIN Student s ON s.StudentId = fc.StudentId left join FeeInstallment on FeeInstallment.CommitmentId=fc.CommitmentId LEFT JOIN (select PayAmount=sum(PayAmount),StudentId from FeePayment fp group by StudentId)fp ON fp.StudentId = fc.StudentId WHERE  (FeeInstallment.DueDate < convert(date,GETDATE()) or fc.FeeType='Ontime') group by s.StudentId, s.FirstName+' '+LastName, s.Email )t where convert(decimal,isnull(Paid,0))< convert(decimal,isnull(Amount,0))and (convert(date,LastReminderDate)>DATEADD(day,+7,convert(date,LastReminderDate))
+  or LastReminderDate is null
+  )";
 
             SqlDataAdapter da = new SqlDataAdapter(query, con);
             DataTable dt = new DataTable();
