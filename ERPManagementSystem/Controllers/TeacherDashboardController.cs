@@ -67,17 +67,24 @@ namespace ERPManagementSystem.Controllers
 
                 while (dr.Read())
                 {
-                    TimeSpan start = (TimeSpan)dr["StartTime"];
-                    TimeSpan end = (TimeSpan)dr["EndTime"];
+                    //TimeSpan start = (TimeSpan)dr["StartTime"];
+                    //TimeSpan end = (TimeSpan)dr["EndTime"];
+                     DateTime start = DateTime.ParseExact(dr["StartTime"].ToString(), "hh:mm tt", null);
+                    DateTime end = DateTime.ParseExact(dr["EndTime"].ToString(), "hh:mm tt", null);
 
                     list.Add(new TeacherDashboard
                     {
                         DayOfWeek = dr["DayOfWeek"].ToString(),
                         SubjectName = dr["SubjectName"].ToString(),
                         ClassName = dr["ClassName"].ToString(),
-                        Slot = start.Hours + ":00 - " + end.Hours + ":00",
+                        // Slot = start.Hours + ":00 - " + end.Hours + ":00",
+                        Slot = Convert.ToDateTime(dr["StartTime"]).ToString("hh:mm tt")
+          + " - " +
+            Convert.ToDateTime(dr["EndTime"]).ToString("hh:mm tt"),
+
+                        //IsAttendanceTaken = dr["IsTaken"] == DBNull.Value ? (bool?)null : Convert.ToInt32(dr["IsTaken"]) == 1
                         IsAttendanceTaken = Convert.ToInt32(dr["IsTaken"]) == 1
-                    });
+                    }) ;
                 }
 
                 dr.Close();

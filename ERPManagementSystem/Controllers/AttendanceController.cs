@@ -32,7 +32,7 @@ public class AttendanceController : Controller
         inner join Subject s on s.SubjectId=t.SubjectId
         inner join Course co on co.CourseId=c.CourseId
         inner join Department d on d.DepartmentId=co.DepartmentId
-		inner join teacher on teacher.TeacherId= t.TeacherId and t.TeacherId="+ Convert.ToInt32(Session["TeacherId"]) + " ", con);
+		inner join teacher on teacher.TeacherId= t.TeacherId and t.TeacherId=" + Convert.ToInt32(Session["TeacherId"]) + " ", con);
 
             con.Open();
             SqlDataReader dr = cmd.ExecuteReader();
@@ -50,11 +50,23 @@ public class AttendanceController : Controller
                     CourseName = dr["CourseName"].ToString(),
                     DepartmentName = dr["DepartmentName"].ToString(),
                     DayOfWeek = dr["DayOfWeek"].ToString(),
-                    StartTime = (TimeSpan)dr["StartTime"],
-                    EndTime = (TimeSpan)dr["EndTime"],
+                    //StartTime = (TimeSpan)dr["StartTime"],
+                    //EndTime = (TimeSpan)dr["EndTime"],
+                    StartTime = DateTime.ParseExact(
+        dr["StartTime"].ToString(),
+        "hh:mm tt",
+        null
+    ).TimeOfDay,
+
+                    EndTime = DateTime.ParseExact(
+        dr["EndTime"].ToString(),
+        "hh:mm tt",
+        null
+    ).TimeOfDay,
+
                     IsAttendanceDone = Convert.ToBoolean(dr["IsAttendanceDone"]),
                     TeacherName = dr["teacher_Name"].ToString()
-                }) ;
+                });
             }
         }
 
